@@ -1,18 +1,38 @@
-#include <Arduino.h>
 
-// put function declarations here: alloooooooooooooooooooooooooo
-int myFunction(int, int);
+/*------------------------------ Librairies ---------------------------------*/
+#include "LibDreamT.h" // Vos propres librairies
+
+
+/*---------------------------- fonctions "Main" -----------------------------*/
 
 void setup() {
-  // put your setup code here, to run once:
-  int result = myFunction(2, 3);
+ InitDream();
 }
+//______________________________________________________________________
 
+
+
+
+
+
+
+/* Boucle principale (infinie)*/
 void loop() {
-  // put your main code here, to run repeatedly:
-}
 
-// put function definitions here:
-int myFunction(int x, int y) {
-  return x + y;
+  if(shouldRead_){
+    readMsg();
+  }
+  if(shouldSend_){
+    sendMsg();
+  }
+  if(shouldPulse_){
+    startPulse();
+  }
+
+  // mise a jour des chronometres
+  timerSendMsg_.update();
+  timerPulse_.update();
+  
+  // mise à jour du PID
+  pid_.run();
 }
