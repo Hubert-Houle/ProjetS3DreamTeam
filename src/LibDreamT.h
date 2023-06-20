@@ -1,6 +1,12 @@
 #include <LibS3GRO.h>
 #include <ArduinoJson.h>
-/*------------------------------ Constantes ---------------------------------*/
+#include <Arduino.h>
+#include <Adafruit_BNO055.h>
+#include <Adafruit_Sensor.h>
+#include <Wire.h>
+#include <utility/imumaths.h>
+
+//------------------------------ Constantes ---------------------------------
 
 #define BAUD            115200      // Frequence de transmission serielle
 #define UPDATE_PERIODE  100         // Periode (ms) d'envoie d'etat general
@@ -11,8 +17,10 @@
 #define PASPARTOUR      64          // Nombre de pas par tour du moteur
 #define RAPPORTVITESSE  50          // Rapport de vitesse du moteur
 
-/*---------------------------- variables globales ---------------------------*/
+#define MagnetOn        1
+#define MagnetOff       0
 
+//---------------------------- variables globales ---------------------------
 ArduinoX AX_;                       // objet arduinoX
 MegaServo servo_;                   // objet servomoteur
 VexQuadEncoder vexEncoder_;         // objet encodeur vex
@@ -30,25 +38,32 @@ SoftTimer timerPulse_;              // chronometre pour la duree d'un pulse
 uint16_t pulseTime_ = 0;            // temps dun pulse en ms
 float pulsePWM_ = 0;                // Amplitude de la tension au moteur [-1,1]
 
-
 float Axyz[3];                      // tableau pour accelerometre
 float Gxyz[3];                      // tableau pour giroscope
 float Mxyz[3];                      // tableau pour magnetometre
 
-/*------------------------- Prototypes de fonctions -------------------------*/
+Adafruit_BNO055 bno = Adafruit_BNO055(55);
+imu::Vector<3> AnglesPendule;
+imu::Vector<3> OmegaPendule;
 
+//------------------------- Prototypes de fonctions -------------------------
+void InitDream();
 void timerCallback();
 void startPulse();
 void endPulse();
 void sendMsg(); 
 void readMsg();
 void serialEvent();
-
-// Fonctions pour le PID
+  // Magnet
+void digitalWrite(uint8_t pin, uint8_t val);
+void Magnet();
+  // PID
 double PIDmeasurement();
 void PIDcommand(double cmd);
 void PIDgoalReached();
-/*---------------------------Definition de fonctions ------------------------*/
+
+
+//________________________Definition de fonctions ______________________________
 void serialEvent(){shouldRead_ = true;}
 
 void timerCallback(){shouldSend_ = true;}
@@ -64,6 +79,8 @@ void startPulse(){
   isInPulse_ = true;
 }
 
+
+//-------------------------------------------------------------------------------
 void endPulse(){
   /* Rappel du chronometre */
   AX_.setMotorPWM(0,0);
@@ -72,6 +89,8 @@ void endPulse(){
   isInPulse_ = false;
 }
 
+
+//-------------------------------------------------------------------------------
 void sendMsg(){
   /* Envoit du message Json sur le port seriel */
   StaticJsonDocument<500> doc;
@@ -103,6 +122,8 @@ void sendMsg(){
   shouldSend_ = false;
 }
 
+
+//-------------------------------------------------------------------------------
 void readMsg(){
   // Lecture du message Json
   StaticJsonDocument<500> doc;
@@ -144,9 +165,14 @@ void readMsg(){
   }
 }
 
-// Fonction Init
+
+//--  Init  ---------------------------------------------------------------------
 void InitDream()
 {
+    //PinMode
+  pinMode(MAGPIN, OUTPUT); // Definition du IO
+
+  bno.setExtCrystalUse(true);
   Serial.begin(BAUD);               // initialisation de la communication serielle
   AX_.init();                       // initialisation de la carte ArduinoX 
   imu_.init();                      // initialisation de la centrale inertielle
@@ -170,9 +196,14 @@ void InitDream()
   pid_.setAtGoalFunc(PIDgoalReached);
   pid_.setEpsilon(0.001);
   pid_.setPeriod(200);
+  //
+
+
+
   return ;
 }
-// Fonctions pour le PID
+
+//--  PID  -----------------------------------------------------------------------
 double PIDmeasurement(){
   // To do
 }
@@ -182,3 +213,20 @@ void PIDcommand(double cmd){
 void PIDgoalReached(){
   // To do
 }
+
+//--  Aimant  -----------------------------------------------------------------------
+void Magnet(bool StateMagnet)
+{
+  if (StateMagnet == 1 )
+  {
+    digitalWrite(MAGPIN , HIGH);
+  }
+  else 
+  {
+   digitalWrite(MAGPIN , LOW );
+  }
+}
+
+//--  BNO055  ---(fuck jo)--------------------------------------------------------------------
+
+

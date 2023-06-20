@@ -5,10 +5,13 @@
 
 /*---------------------------- fonctions "Main" -----------------------------*/
 
-void setup() {
+void setup() 
+{
  InitDream();
-}
-//______________________________________________________________________
+
+
+};
+
 
 
 
@@ -17,7 +20,11 @@ void setup() {
 
 
 /* Boucle principale (infinie)*/
-void loop() {
+void loop() 
+{
+  sensors_event_t event;
+bno.getEvent( &event );
+
 
   if(shouldRead_){
     readMsg();
@@ -28,6 +35,17 @@ void loop() {
   if(shouldPulse_){
     startPulse();
   }
+
+
+Magnet(MagnetOn);
+
+
+AnglesPendule = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
+AnglesPendule.x();
+OmegaPendule = bno.getVector(Adafruit_BNO055::VECTOR_GYROSCOPE);
+OmegaPendule.x();
+
+
 
   // mise a jour des chronometres
   timerSendMsg_.update();
