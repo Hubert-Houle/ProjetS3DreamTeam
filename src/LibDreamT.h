@@ -5,13 +5,15 @@
 #include <Adafruit_Sensor.h>
 #include <Wire.h>
 #include <utility/imumaths.h>
+#include "RB-See-473.h"
+
 
 //------------------------------ Constantes ---------------------------------
 
 #define BAUD            115200      // Frequence de transmission serielle
 #define UPDATE_PERIODE  100         // Periode (ms) d'envoie d'etat general
 
-#define MAGPIN          32          // Port numerique pour electroaimant
+#define MAGPIN          32          // J18     Port numerique pour electroaimant
 #define POTPIN          A5          // Port analogique pour le potentiometre
 
 #define PASPARTOUR      64          // Nombre de pas par tour du moteur
@@ -169,24 +171,27 @@ void readMsg(){
 //--  Init  ---------------------------------------------------------------------
 void InitDream()
 {
-    //PinMode
-  pinMode(MAGPIN, OUTPUT); // Definition du IO
+
+  AX_.init();                       // initialisation de la carte ArduinoX 
+ 
 
   bno.setExtCrystalUse(true);
   Serial.begin(BAUD);               // initialisation de la communication serielle
-  AX_.init();                       // initialisation de la carte ArduinoX 
-  imu_.init();                      // initialisation de la centrale inertielle
-  vexEncoder_.init(2,3);            // initialisation de l'encodeur VEX
+  Serial.println("criss");
+  //imu_.init();   
+   Serial.println("criss2");                   // initialisation de la centrale inertielle
+  vexEncoder_.init(2,3);
+   Serial.println("criss3");            // initialisation de l'encodeur VEX
   // attache de l'interruption pour encodeur vex
   attachInterrupt(vexEncoder_.getPinInt(), []{vexEncoder_.isr();}, FALLING);
-  
+   Serial.println("criss4");
   // Chronometre envoie message
   timerSendMsg_.setDelay(UPDATE_PERIODE);
   timerSendMsg_.setCallback(timerCallback);
   timerSendMsg_.enable();
 
   // Chronometre duration pulse
-  timerPulse_.setCallback(endPulse);
+  //timerPulse_.setCallback(endPulse);
   
   // Initialisation du PID
   pid_.setGains(0.25,0.1 ,0);
@@ -196,7 +201,11 @@ void InitDream()
   pid_.setAtGoalFunc(PIDgoalReached);
   pid_.setEpsilon(0.001);
   pid_.setPeriod(200);
-  //
+  //IMU-------------
+
+  //PinMode
+  pinMode(MAGPIN, OUTPUT); // Definition du IO
+
 
 
 
@@ -228,5 +237,27 @@ void Magnet(bool StateMagnet)
 }
 
 //--  BNO055  ---(fuck jo)--------------------------------------------------------------------
+float AlphaPendule(float TableauBNO[4] )
+{
+  float LiveTime = millis();
 
+  float PrevOmega = TableauBNO[0];
+  float PrevTime = TableauBNO[1];
+  float LiveOmega = TableauBNO[2];
+
+  float DeltaTime = LiveTime - PrevTime;
+  float DeltaOmega = LiveOmega - PrevOmega;
+  float Alpha = DeltaOmega/DeltaTime;
+
+  TableauBNO[0]= LiveOmega;
+  TableauBNO[1]= LiveTime;
+  TableauBNO[3]= Alpha;
+
+  return TableauBNO;
+
+}
+
+
+
+//--  Rb-see-473  ---(fuck jo)-----------------------------------------------------
 

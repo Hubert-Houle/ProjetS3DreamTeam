@@ -9,10 +9,7 @@ void setup()
 {
  InitDream();
 
-
 };
-
-
 
 
 
@@ -22,9 +19,13 @@ void setup()
 /* Boucle principale (infinie)*/
 void loop() 
 {
-  sensors_event_t event;
+  // ---- comment pour enlever error BNO pas sur arduino
+sensors_event_t event;
 bno.getEvent( &event );
-
+AnglesPendule = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
+AnglesPendule.x();
+OmegaPendule = bno.getVector(Adafruit_BNO055::VECTOR_GYROSCOPE);
+OmegaPendule.x();
 
   if(shouldRead_){
     readMsg();
@@ -39,11 +40,12 @@ bno.getEvent( &event );
 
 Magnet(MagnetOn);
 
+// BNO
 
-AnglesPendule = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
-AnglesPendule.x();
-OmegaPendule = bno.getVector(Adafruit_BNO055::VECTOR_GYROSCOPE);
-OmegaPendule.x();
+
+
+
+
 
 
 
