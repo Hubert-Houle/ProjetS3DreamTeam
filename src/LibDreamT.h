@@ -44,9 +44,9 @@ float Axyz[3];                      // tableau pour accelerometre
 float Gxyz[3];                      // tableau pour giroscope
 float Mxyz[3];                      // tableau pour magnetometre
 
-Adafruit_BNO055 bno = Adafruit_BNO055(55);
-imu::Vector<3> AnglesPendule;
-imu::Vector<3> OmegaPendule;
+//Adafruit_BNO055 bno = Adafruit_BNO055(55);
+//imu::Vector<3> AnglesPendule;
+//imu::Vector<3> OmegaPendule;
 
 //------------------------- Prototypes de fonctions -------------------------
 void InitDream();
@@ -175,7 +175,7 @@ void InitDream()
   AX_.init();                       // initialisation de la carte ArduinoX 
  
 
-  bno.setExtCrystalUse(true);
+  //bno.setExtCrystalUse(true);
   Serial.begin(BAUD);               // initialisation de la communication serielle
   Serial.println("criss");
   //imu_.init();   
@@ -237,7 +237,10 @@ void Magnet(bool StateMagnet)
 }
 
 //--  BNO055  ---(fuck jo)--------------------------------------------------------------------
-float AlphaPendule(float TableauBNO[4] )
+
+//TU PEUX PAS RETOURNER UN TABLEAU EN RETURN. FUCK IT, JE VAIS FAIRE UNE CLASSE
+
+/*float AlphaPendule(float TableauBNO[4] )
 {
   float LiveTime = millis();
 
@@ -255,7 +258,7 @@ float AlphaPendule(float TableauBNO[4] )
 
   return TableauBNO;
 
-}
+}*/
 
 
 
