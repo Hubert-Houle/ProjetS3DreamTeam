@@ -3,9 +3,8 @@
 bnoRead::bnoRead()
 {
 
-    Adafruit_BNO055 bno = Adafruit_BNO055(55);
+    bno = Adafruit_BNO055(55);
     bno.setExtCrystalUse(true);
-
 
 }
 
@@ -14,18 +13,25 @@ bnoRead::~bnoRead()
 
 }
 
-float bnoRead::getAlpha()
+void bnoRead::setOmega()
+{
+
+  OmegaPendule = bno.getVector(Adafruit_BNO055::VECTOR_GYROSCOPE);
+  currentOmega = OmegaPendule.x();
+
+}
+
+float bnoRead::setAlpha()
 {
     float Accel = 0;
     liveTime = millis();
 
-    //FAIRE getOmega() pour currentOmega
-    //float currentOmega = 
+    float DeltaTime = liveTime - prevTime;
+    float DeltaOmega = currentOmega - prevOmega;
 
-    //float DeltaTime = liveTime - prevTime;
-    //float DeltaOmega = currentOmega - prevOmega;
+    prevOmega = currentOmega;
 
-    //prevOmega = currentOmega;
+    float Accel = DeltaOmega/DeltaTime;
 
 
     return Accel;

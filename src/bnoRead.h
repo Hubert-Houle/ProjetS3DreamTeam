@@ -14,16 +14,18 @@ public:
     bnoRead();
     ~bnoRead();
 
-    float getAlpha();
-    float getOmega();
+    float setAlpha();
+    float setOmega();
     imu::Vector<3> AnglesPendule;
     imu::Vector<3> OmegaPendule;
+    Adafruit_BNO055 bno;
 
 private:
     float liveTime = 0;
     float prevTime = 0;
     float currenttime = 0;
-    float prevOmega
+    float currentOmega = 0;
+    float prevOmega = 0;
 
 };
 
