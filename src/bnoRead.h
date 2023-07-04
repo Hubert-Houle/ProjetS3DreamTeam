@@ -15,7 +15,8 @@ public:
     ~bnoRead();
 
     float setAlpha();
-    float setOmega();
+    void setOmega();
+    float getOmega();
     imu::Vector<3> AnglesPendule;
     imu::Vector<3> OmegaPendule;
     Adafruit_BNO055 bno;

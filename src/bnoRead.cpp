@@ -21,6 +21,12 @@ void bnoRead::setOmega()
 
 }
 
+float bnoRead::getOmega()
+{
+  float omega = currentOmega;
+  return omega;
+}
+
 float bnoRead::setAlpha()
 {
     float Accel = 0;
@@ -31,7 +37,7 @@ float bnoRead::setAlpha()
 
     prevOmega = currentOmega;
 
-    float Accel = DeltaOmega/DeltaTime;
+    Accel = DeltaOmega/DeltaTime;
 
 
     return Accel;
