@@ -25,8 +25,6 @@ tableauEncoder[1]=0;
 tableauEncoder[2]=0;
 tableauEncoder[3]=0;
 
-  bnoRead BNO;
-
 
   while(1)
   {
@@ -72,7 +70,7 @@ while(1)
     
 
   // Motor
-
+delay(100);
     getDataEncoder(tableauEncoder);
 
     Serial.print("Time:");
@@ -84,9 +82,9 @@ while(1)
     Serial.print("Acceleration:");
     Serial.println(tableauEncoder[3]);
 
-    if (tableauEncoder[1]<500 )
+    if (tableauEncoder[1]<800 )
     {
-      AX_.setMotorPWM(0,0.12);
+      AX_.setMotorPWM(0,0.25);
     }
     else
     {   AX_.setMotorPWM(0,0);}

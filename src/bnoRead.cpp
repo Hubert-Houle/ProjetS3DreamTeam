@@ -81,11 +81,6 @@ float bnoRead::getAlpha()
 
 
 
-float bnoRead::getAlpha()
-{
-  return Accel;
-}
-
 
 
 
