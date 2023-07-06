@@ -2,7 +2,6 @@
 /*------------------------------ Librairies ---------------------------------*/
 #include "LibDreamT.h" // Vos propres librairies
 
-
 /*---------------------------- fonctions "Main" -----------------------------*/
 
 void setup() 
@@ -16,16 +15,27 @@ void setup()
 
 
 
-/* Boucle principale (infinie)*/
 void loop() 
 {
-  // ---- comment pour enlever error BNO pas sur arduino
-//sensors_event_t event;
-//bno.getEvent( &event );
-//AnglesPendule = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
-//AnglesPendule.x();
-//OmegaPendule = bno.getVector(Adafruit_BNO055::VECTOR_GYROSCOPE);
-//OmegaPendule.x();
+  bnoRead BNO;
+
+
+  while(1)
+  {
+
+    BNO.setOmega();
+    BNO.setAlpha();
+    BNO.getAngle();
+
+    Serial.print(">Omega:");
+    Serial.println(BNO.getOmega());
+    Serial.print(">Alpha:");
+    Serial.println(BNO.getAlpha());  
+    Serial.print(">Angle:");
+    Serial.println(BNO.getAngle());
+
+  }
+
 
   if(shouldRead_){
     readMsg();

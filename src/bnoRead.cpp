@@ -4,20 +4,48 @@ bnoRead::bnoRead()
 {
 
     bno = Adafruit_BNO055(55);
+
+    bno.begin();
+
     bno.setExtCrystalUse(true);
+    
+    delay(1000);
 
 }
 
 bnoRead::~bnoRead()
 {
+  
+}
+
+float bnoRead::getAngle()
+{
+  
+  sensors_event_t event; 
+  bno.getEvent(&event);
+  AnglesPendule = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
+
+  if (AnglesPendule.x() >= 180)
+  {
+    correctAngle = 360 - AnglesPendule.x();
+  }
+
+  if (AnglesPendule.x() <= 180)
+  {
+    correctAngle = 0 - AnglesPendule.x();
+  }
+  return correctAngle;
 
 }
 
+
 void bnoRead::setOmega()
 {
-
+  
+  sensors_event_t event; 
+  bno.getEvent(&event);
   OmegaPendule = bno.getVector(Adafruit_BNO055::VECTOR_GYROSCOPE);
-  currentOmega = OmegaPendule.x();
+  currentOmega = OmegaPendule.z();
 
 }
 
@@ -27,20 +55,27 @@ float bnoRead::getOmega()
   return omega;
 }
 
-float bnoRead::setAlpha()
+
+void bnoRead::setAlpha()
 {
-    float Accel = 0;
+    sensors_event_t event; 
+    bno.getEvent(&event);
     liveTime = millis();
 
     float DeltaTime = liveTime - prevTime;
     float DeltaOmega = currentOmega - prevOmega;
 
     prevOmega = currentOmega;
+    prevTime = liveTime;
 
     Accel = DeltaOmega/DeltaTime;
 
+}
 
-    return Accel;
+float bnoRead::getAlpha()
+{
+
+  return Accel;
 }
 
 

@@ -6,7 +6,7 @@
 #include <Wire.h>
 #include <utility/imumaths.h>
 #include "RB-See-473.h"
-
+#include "bnoRead.h"
 
 //------------------------------ Constantes ---------------------------------
 
