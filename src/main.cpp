@@ -40,11 +40,6 @@ tableauEncoder[3]=0;
     Serial.print(">Angle:");
     Serial.println(BNO.getAngle());
 
-  }
-
-
-while(1)
-{
 
 
 
