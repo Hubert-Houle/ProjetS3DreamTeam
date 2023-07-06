@@ -6,6 +6,7 @@
 #include <Wire.h>
 #include <utility/imumaths.h>
 #include "RB-See-473.h"
+#include "bnoRead.h"
 
 
 //------------------------------ Constantes ---------------------------------
@@ -63,6 +64,11 @@ void Magnet();
 double PIDmeasurement();
 void PIDcommand(double cmd);
 void PIDgoalReached();
+  //Motor
+void getDataEncoder(float tableauEncodor[8]);
+//int32_t ArduinoX::readEncoder(uint8_t id);
+//int32_t ArduinoX::readResetEncoder(uint8_t id);
+//void ArduinoX::resetEncoder(uint8_t id);
 
 
 //________________________Definition de fonctions ______________________________
@@ -168,7 +174,7 @@ void readMsg(){
 }
 
 
-//--  Init  ---------------------------------------------------------------------
+//--  Init  ~~~~____~~~~____~~~~____~~~~____~~~~____~~~~_____~~~~____~~~~____~~~~
 void InitDream()
 {
 
@@ -201,8 +207,9 @@ void InitDream()
   pid_.setAtGoalFunc(PIDgoalReached);
   pid_.setEpsilon(0.001);
   pid_.setPeriod(200);
-  //IMU-------------
 
+  //IMU-------------
+    //BNO = new bnoRead;
   //PinMode
   pinMode(MAGPIN, OUTPUT); // Definition du IO
 
@@ -262,5 +269,49 @@ void Magnet(bool StateMagnet)
 
 
 
-//--  Rb-see-473  ---(fuck jo)-----------------------------------------------------
+//--  Motor -------------------------------------
+//  tableau[0] = previus Time
+//  tableau[1] = previus pulse
+//  tableau[2] = previus motor speed
+//  tableau[3] = previus motor acceleration
+//  tableau[4] = current time
+//  tableau[5] = current pulse
+//  tableau[6] = current motor speed
+//  tableau[7] = current motor acceleration
+//--  Motor -------------------------------------
+//  tableau[0] = previus Time
+//  tableau[1] = previus pulse
+//  tableau[2] = previus motor speed
+//  tableau[3] = previus motor acceleration
+
+
+
+
+void getDataEncoder(float *tableauEncoder)
+{  
+    float DataEncoder[4];
+
+    float PrevTime = tableauEncoder[0];
+    float PrevPulse = tableauEncoder[1];
+    float LiveTime = millis();
+    float LivePulse = AX_.readEncoder(0);
+   
+    float DeltaTime = LiveTime - PrevTime;
+    Serial.println(DeltaTime);
+    float DeltaPulse = LivePulse - PrevPulse;
+      // vitesse
+    float VitesseMotor = DeltaPulse/DeltaTime;
+      // acceleration
+    float PrevVitesse = tableauEncoder[2];
+    float DeltaVitesse = VitesseMotor - PrevVitesse;
+    float AccMotor = DeltaVitesse / DeltaTime;
+
+    tableauEncoder[0] = LiveTime;
+    tableauEncoder[1] = LivePulse;
+    tableauEncoder[2] = VitesseMotor;
+    tableauEncoder[3] = AccMotor;
+}
+
+
+
 

@@ -18,41 +18,67 @@ void setup()
 
 /* Boucle principale (infinie)*/
 void loop() 
-{
-  // ---- comment pour enlever error BNO pas sur arduino
-//sensors_event_t event;
-//bno.getEvent( &event );
-//AnglesPendule = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
-//AnglesPendule.x();
-//OmegaPendule = bno.getVector(Adafruit_BNO055::VECTOR_GYROSCOPE);
-//OmegaPendule.x();
+{ 
+bnoRead BNO;
+float tableau[4];
+float *tableauEncoder= tableau;
+tableauEncoder[0]=0;
+tableauEncoder[1]=0;
+tableauEncoder[2]=0;
+tableauEncoder[3]=0;
 
-  if(shouldRead_){
+while(1)
+{
+
+
+
+ 
+    if(shouldRead_){
     readMsg();
   }
-  if(shouldSend_){
+    if(shouldSend_){
     sendMsg();
   }
-  if(shouldPulse_){
+    if(shouldPulse_){
     startPulse();
   }
 
+  // Magnet
+    Magnet(MagnetOn);
 
-Magnet(MagnetOn);
-
-// BNO
-
-
-
-
-
-
-
-
-  // mise a jour des chronometres
-  timerSendMsg_.update();
-  timerPulse_.update();
+  // BNO
   
-  // mise à jour du PID
-  pid_.run();
+    //BNO.setOmega();
+
+    //Serial.println(BNO.setOmega());
+    
+
+  // Motor
+
+    getDataEncoder(tableauEncoder);
+
+    Serial.print("Time:");
+    Serial.println(tableauEncoder[0]);
+    Serial.print("Position:");
+    Serial.println(tableauEncoder[1]);
+    Serial.print("Vitesse:");
+    Serial.println(tableauEncoder[2]);
+    Serial.print("Acceleration:");
+    Serial.println(tableauEncoder[3]);
+
+    if (tableauEncoder[1]<500 )
+    {
+      AX_.setMotorPWM(0,0.12);
+    }
+    else
+    {   AX_.setMotorPWM(0,0);}
+
+/*
+    // mise a jour des chronometres
+    timerSendMsg_.update();
+    timerPulse_.update();
+  
+    // mise à jour du PID
+    pid_.run();*/
+  }
 }
