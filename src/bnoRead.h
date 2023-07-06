@@ -8,7 +8,6 @@
 #include <utility/imumaths.h>
 
 
-
 class bnoRead
 {
 public:
@@ -17,9 +16,9 @@ public:
 
     void setAlpha();
     float getAlpha();
-    float setOmega();
+    void setOmega();
     float getOmega();
-
+    float getAngle();
     imu::Vector<3> AnglesPendule;
     imu::Vector<3> OmegaPendule;
     Adafruit_BNO055 bno;
@@ -31,7 +30,8 @@ private:
     float currenttime = 0;
     float currentOmega = 0;
     float prevOmega = 0;
-    float Accel=0;
+    float Accel = 0;
+    float correctAngle = 0;
 
 };
 

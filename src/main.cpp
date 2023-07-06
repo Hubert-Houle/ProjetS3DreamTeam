@@ -2,7 +2,6 @@
 /*------------------------------ Librairies ---------------------------------*/
 #include "LibDreamT.h" // Vos propres librairies
 
-
 /*---------------------------- fonctions "Main" -----------------------------*/
 
 void setup() 
@@ -16,7 +15,6 @@ void setup()
 
 
 
-/* Boucle principale (infinie)*/
 void loop() 
 { 
 bnoRead BNO;
@@ -26,6 +24,26 @@ tableauEncoder[0]=0;
 tableauEncoder[1]=0;
 tableauEncoder[2]=0;
 tableauEncoder[3]=0;
+
+  bnoRead BNO;
+
+
+  while(1)
+  {
+
+    BNO.setOmega();
+    BNO.setAlpha();
+    BNO.getAngle();
+
+    Serial.print(">Omega:");
+    Serial.println(BNO.getOmega());
+    Serial.print(">Alpha:");
+    Serial.println(BNO.getAlpha());  
+    Serial.print(">Angle:");
+    Serial.println(BNO.getAngle());
+
+  }
+
 
 while(1)
 {
