@@ -25,8 +25,6 @@ tableauEncoder[1]=0;
 tableauEncoder[2]=0;
 tableauEncoder[3]=0;
 
-  bnoRead BNO;
-
 
   while(1)
   {
