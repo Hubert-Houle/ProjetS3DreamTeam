@@ -18,13 +18,13 @@ void setup()
 void loop() 
 { 
 bnoRead BNO;
-float tableau[4];
-float *tableauEncoder= tableau;
+double tableau[4];
+double *tableauEncoder= tableau;
 tableauEncoder[0]=0;
 tableauEncoder[1]=0;
 tableauEncoder[2]=0;
 tableauEncoder[3]=0;
-
+int allo = 0;
 
   while(1)
   {
@@ -65,7 +65,9 @@ tableauEncoder[3]=0;
     
 
   // Motor
-delay(100);
+//delay(00);
+  if (allo%10 == 0 )
+  {
     getDataEncoder(tableauEncoder);
 
     Serial.print("Time:");
@@ -76,14 +78,14 @@ delay(100);
     Serial.println(tableauEncoder[2]);
     Serial.print("Acceleration:");
     Serial.println(tableauEncoder[3]);
-
-    if (tableauEncoder[1]<800 )
+  }
+    /*if (tableauEncoder[1]<800 )
     {
       AX_.setMotorPWM(0,0.25);
     }
     else
     {   AX_.setMotorPWM(0,0);}
-
+*/
 /*
     // mise a jour des chronometres
     timerSendMsg_.update();
@@ -91,5 +93,6 @@ delay(100);
   
     // mise à jour du PID
     pid_.run();*/
+    allo++;
   }
 }

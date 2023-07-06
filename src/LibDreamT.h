@@ -65,7 +65,7 @@ double PIDmeasurement();
 void PIDcommand(double cmd);
 void PIDgoalReached();
   //Motor
-void getDataEncoder(float tableauEncodor[8]);
+void getDataEncoder(double tableauEncodor[4]);
 //int32_t ArduinoX::readEncoder(uint8_t id);
 //int32_t ArduinoX::readResetEncoder(uint8_t id);
 //void ArduinoX::resetEncoder(uint8_t id);
@@ -270,14 +270,7 @@ void Magnet(bool StateMagnet)
 
 
 //--  Motor -------------------------------------
-//  tableau[0] = previus Time
-//  tableau[1] = previus pulse
-//  tableau[2] = previus motor speed
-//  tableau[3] = previus motor acceleration
-//  tableau[4] = current time
-//  tableau[5] = current pulse
-//  tableau[6] = current motor speed
-//  tableau[7] = current motor acceleration
+
 //--  Motor -------------------------------------
 //  tableau[0] = previus Time
 //  tableau[1] = previus pulse
@@ -287,24 +280,31 @@ void Magnet(bool StateMagnet)
 
 
 
-void getDataEncoder(float *tableauEncoder)
+void getDataEncoder(double *tableauEncoder)
 {  
-    float DataEncoder[4];
+  double R = 0.035;
+  double C = 3.1416*R*R;
+  double Kg = 25; 
+  double ppt = 46;
+double dpp = C/(Kg*ppt);
 
-    float PrevTime = tableauEncoder[0];
-    float PrevPulse = tableauEncoder[1];
-    float LiveTime = millis();
-    float LivePulse = AX_.readEncoder(0);
+    double PrevTime = tableauEncoder[0];
+    double PrevPulse = tableauEncoder[1];
+    double PrevVitesse = tableauEncoder[2];
+    unsigned long LiveTime = millis()/1000;
+    double LivePulse = AX_.readEncoder(0)*dpp;
    
-    float DeltaTime = LiveTime - PrevTime;
+    double DeltaTime = LiveTime - PrevTime;
     Serial.println(DeltaTime);
-    float DeltaPulse = LivePulse - PrevPulse;
+
+
       // vitesse
-    float VitesseMotor = DeltaPulse/DeltaTime;
+    double DeltaPulse = LivePulse - PrevPulse;
+    double VitesseMotor = DeltaPulse / DeltaTime;
+    
       // acceleration
-    float PrevVitesse = tableauEncoder[2];
-    float DeltaVitesse = VitesseMotor - PrevVitesse;
-    float AccMotor = DeltaVitesse / DeltaTime;
+    double DeltaVitesse = VitesseMotor - PrevVitesse;
+    double AccMotor = DeltaVitesse / DeltaTime;
 
     tableauEncoder[0] = LiveTime;
     tableauEncoder[1] = LivePulse;
