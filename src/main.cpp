@@ -17,7 +17,7 @@ void setup()
 
 void loop() 
 { 
-bnoRead BNO;
+BNO = new bnoRead;
 double tableau[4];
 double *tableauEncoder= tableau;
 tableauEncoder[0]=0;
@@ -29,16 +29,16 @@ int allo = 0;
   while(1)
   {
 
-    BNO.setOmega();
-    BNO.setAlpha();
-    BNO.getAngle();
+    BNO->setOmega();
+    BNO->setAlpha();
+    BNO->getAngle();
 
     Serial.print(">Omega:");
-    Serial.println(BNO.getOmega());
+    Serial.println(BNO->getOmega());
     Serial.print(">Alpha:");
-    Serial.println(BNO.getAlpha());  
+    Serial.println(BNO->getAlpha());  
     Serial.print(">Angle:");
-    Serial.println(BNO.getAngle());
+    Serial.println(BNO->getAngle());
 
 
 
@@ -86,13 +86,13 @@ int allo = 0;
     else
     {   AX_.setMotorPWM(0,0);}
 */
-/*
+
     // mise a jour des chronometres
     timerSendMsg_.update();
     timerPulse_.update();
   
     // mise à jour du PID
-    pid_.run();*/
+    pid_.run();
     allo++;
   }
 }

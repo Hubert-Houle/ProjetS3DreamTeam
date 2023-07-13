@@ -29,6 +29,7 @@ MegaServo servo_;                   // objet servomoteur
 VexQuadEncoder vexEncoder_;         // objet encodeur vex
 IMU9DOF imu_;                       // objet imu
 PID pid_;                           // objet PID
+bnoRead *BNO;                       // objet BNO
 
 volatile bool shouldSend_ = false;  // drapeau prêt à envoyer un message
 volatile bool shouldRead_ = false;  // drapeau prêt à lire un message
@@ -122,7 +123,8 @@ void sendMsg(){
   doc["gyroZ"] = imu_.getGyroZ();
   doc["isGoal"] = pid_.isAtGoal();
   doc["actualTime"] = pid_.getActualDt();
-
+  doc["Angle"] = BNO->getAngle();
+  doc["Vitesse Angulaire"] = BNO->getOmega();
   // Serialisation
   serializeJson(doc, Serial);
   // Envoit
@@ -197,7 +199,7 @@ void InitDream()
   timerSendMsg_.enable();
 
   // Chronometre duration pulse
-  //timerPulse_.setCallback(endPulse);
+  timerPulse_.setCallback(endPulse);
   
   // Initialisation du PID
   pid_.setGains(0.25,0.1 ,0);
@@ -243,29 +245,6 @@ void Magnet(bool StateMagnet)
   }
 }
 
-//--  BNO055  ---(fuck jo)--------------------------------------------------------------------
-
-//TU PEUX PAS RETOURNER UN TABLEAU EN RETURN. FUCK IT, JE VAIS FAIRE UNE CLASSE
-
-/*float AlphaPendule(float TableauBNO[4] )
-{
-  float LiveTime = millis();
-
-  float PrevOmega = TableauBNO[0];
-  float PrevTime = TableauBNO[1];
-  float LiveOmega = TableauBNO[2];
-
-  float DeltaTime = LiveTime - PrevTime;
-  float DeltaOmega = LiveOmega - PrevOmega;
-  float Alpha = DeltaOmega/DeltaTime;
-
-  TableauBNO[0]= LiveOmega;
-  TableauBNO[1]= LiveTime;
-  TableauBNO[3]= Alpha;
-
-  return TableauBNO;
-
-}*/
 
 
 
@@ -286,12 +265,13 @@ void getDataEncoder(double *tableauEncoder)
   double C = 3.1416*R*R;
   double Kg = 25; 
   double ppt = 46;
-double dpp = C/(Kg*ppt);
+  double dpp = C/(Kg*ppt);
 
     double PrevTime = tableauEncoder[0];
     double PrevPulse = tableauEncoder[1];
     double PrevVitesse = tableauEncoder[2];
-    unsigned long LiveTime = millis()/1000;
+    double millisecondes = millis();
+    unsigned long LiveTime = millisecondes/1000;
     double LivePulse = AX_.readEncoder(0)*dpp;
    
     double DeltaTime = LiveTime - PrevTime;
