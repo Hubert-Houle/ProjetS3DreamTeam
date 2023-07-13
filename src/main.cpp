@@ -17,9 +17,13 @@ void setup()
 
 void loop() 
 { 
-  bnoRead BNO;
-  Serial.println(BNO.getOmega());
+  bnoRead* BNO = new bnoRead;
+  Magnet(true);
+  while(1){
+  Serial.println(BNO->getAngle());
   PIDabsorbtion(BNO);
+  }
+  //
   
   //Serial.println(AnglesPendule);
 

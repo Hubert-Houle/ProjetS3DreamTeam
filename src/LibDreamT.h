@@ -224,20 +224,23 @@ void PIDgoalReached(){
   // To do
 }
 
-bool PIDabsorbtion(bnoRead cum){
-  delay(50);
+bool PIDabsorbtion(bnoRead *cum){
+  
 
   float erreur_live = 0;
   float erreur_tot = 0;
   float erreur_avant = 0;
   float temp = 0;
   float pid = 0;
-  float kp = 0.004125;
-  float ki = 0.0001;
+  float kp = -0.03;
+  float ki = -0.001;
   float kd = 0.004125;
 
-  while(cum.getAngle()<-10 && cum.getAngle()>10 && cum.getOmega()>20){
-    erreur_live = cum.getAngle() + cum.getOmega()/2;
+  Serial.println(cum->getAngle());
+
+// && (cum->getOmega()>20 || cum->getOmega()<-20)
+  while((cum->getAngle()<-5 || cum->getAngle()>5)){
+    erreur_live = cum->getAngle() + cum->getOmega()/2;
     erreur_tot = erreur_tot + erreur_live;
     erreur_avant = temp - erreur_live;
     temp = erreur_live;
@@ -245,7 +248,9 @@ bool PIDabsorbtion(bnoRead cum){
     pid = kp*erreur_live + ki*erreur_tot + kd*erreur_avant;
     if(pid>1){pid=1;}
     if(pid<-1){pid=-1;}
+    Serial.println(pid);
     deez.setMotorPWM(0, pid);
+    delay(100);
   }
   deez.setMotorPWM(0, 0);
   Serial.println("Bien joue le bot");
