@@ -18,7 +18,7 @@ void setup()
 void loop() 
 { 
   bnoRead BNO;
-  
+  Serial.println(BNO.getOmega());
   PIDabsorbtion(BNO);
   
   //Serial.println(AnglesPendule);
