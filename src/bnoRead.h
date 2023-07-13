@@ -19,7 +19,7 @@ public:
     void setOmega();
     float getOmega();
     float getAngle();
-    imu::Vector<3> AnglesPendule;
+    imu::Quaternion AnglesPendule;
     imu::Vector<3> OmegaPendule;
     Adafruit_BNO055 bno;
     //sensors_event_t event;

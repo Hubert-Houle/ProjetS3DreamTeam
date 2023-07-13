@@ -5,10 +5,12 @@ bnoRead::bnoRead()
 
     bno = Adafruit_BNO055(55);
 
-    bno.begin();
+    bno.begin(OPERATION_MODE_IMUPLUS);
 
     bno.setExtCrystalUse(true);
     
+
+
     delay(1000);
 
 }
@@ -23,8 +25,9 @@ float bnoRead::getAngle()
   
   sensors_event_t event; 
   bno.getEvent(&event);
-  AnglesPendule = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
+  AnglesPendule = bno.getQuat();
 
+  AnglesPendule.toEuler();
   if (AnglesPendule.x() >= 180)
   {
     correctAngle = 360 - AnglesPendule.x();
@@ -35,7 +38,7 @@ float bnoRead::getAngle()
     correctAngle = 0 - AnglesPendule.x();
   }
   return correctAngle;
-
+  delay(200);
 }
 
 
