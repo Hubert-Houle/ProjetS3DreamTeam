@@ -6,6 +6,7 @@
 #include <Wire.h>
 #include <utility/imumaths.h>
 #include "RB-See-473.h"
+#include "bnoRead.h"
 
 
 //------------------------------ Constantes ---------------------------------
@@ -223,10 +224,8 @@ void PIDgoalReached(){
   // To do
 }
 
-bool PIDabsorbtion(){
+bool PIDabsorbtion(bnoRead cum){
   delay(50);
-  float mesure_angle; // A ENLEVER ET REMPLACER PAR VALEUR DU BNO   en deg
-  float mesure_vitesse_angulaire; // A ENLEVER ET REMPLACER PAR VALEUR DU BNO   en deg/s
 
   float erreur_live = 0;
   float erreur_tot = 0;
@@ -237,8 +236,8 @@ bool PIDabsorbtion(){
   float ki = 0.0001;
   float kd = 0.004125;
 
-  while(mesure_angle<-10 && mesure_angle>10 && mesure_vitesse_angulaire>20){
-    erreur_live = mesure_angle + mesure_vitesse_angulaire/2;
+  while(cum.getAngle()<-10 && cum.getAngle()>10 && cum.getOmega()>20){
+    erreur_live = cum.getAngle() + cum.getOmega()/2;
     erreur_tot = erreur_tot + erreur_live;
     erreur_avant = temp - erreur_live;
     temp = erreur_live;
