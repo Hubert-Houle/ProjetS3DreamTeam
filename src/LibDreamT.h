@@ -6,7 +6,6 @@
 #include <Wire.h>
 #include <utility/imumaths.h>
 #include "RB-See-473.h"
-#include "bnoRead.h"
 
 
 //------------------------------ Constantes ---------------------------------
@@ -29,7 +28,7 @@ MegaServo servo_;                   // objet servomoteur
 VexQuadEncoder vexEncoder_;         // objet encodeur vex
 IMU9DOF imu_;                       // objet imu
 PID pid_;                           // objet PID
-bnoRead *BNO;                       // objet BNO
+ArduinoX deez;                      // objet moeur
 
 volatile bool shouldSend_ = false;  // drapeau prêt à envoyer un message
 volatile bool shouldRead_ = false;  // drapeau prêt à lire un message
@@ -46,9 +45,9 @@ float Axyz[3];                      // tableau pour accelerometre
 float Gxyz[3];                      // tableau pour giroscope
 float Mxyz[3];                      // tableau pour magnetometre
 
-//Adafruit_BNO055 bno = Adafruit_BNO055(55);
-//imu::Vector<3> AnglesPendule;
-//imu::Vector<3> OmegaPendule;
+Adafruit_BNO055 bno = Adafruit_BNO055(55);
+imu::Vector<3> AnglesPendule;
+imu::Vector<3> OmegaPendule;
 
 //------------------------- Prototypes de fonctions -------------------------
 void InitDream();
@@ -65,12 +64,7 @@ void Magnet();
 double PIDmeasurement();
 void PIDcommand(double cmd);
 void PIDgoalReached();
-  //Motor
-void getDataEncoder(double tableauEncodor[4]);
-//int32_t ArduinoX::readEncoder(uint8_t id);
-//int32_t ArduinoX::readResetEncoder(uint8_t id);
-//void ArduinoX::resetEncoder(uint8_t id);
-
+bool PIDabsorbtion();
 
 //________________________Definition de fonctions ______________________________
 void serialEvent(){shouldRead_ = true;}
@@ -123,8 +117,7 @@ void sendMsg(){
   doc["gyroZ"] = imu_.getGyroZ();
   doc["isGoal"] = pid_.isAtGoal();
   doc["actualTime"] = pid_.getActualDt();
-  doc["Angle"] = BNO->getAngle();
-  doc["Vitesse Angulaire"] = BNO->getOmega();
+
   // Serialisation
   serializeJson(doc, Serial);
   // Envoit
@@ -176,7 +169,7 @@ void readMsg(){
 }
 
 
-//--  Init  ~~~~____~~~~____~~~~____~~~~____~~~~____~~~~_____~~~~____~~~~____~~~~
+//--  Init  ---------------------------------------------------------------------
 void InitDream()
 {
 
@@ -199,7 +192,7 @@ void InitDream()
   timerSendMsg_.enable();
 
   // Chronometre duration pulse
-  timerPulse_.setCallback(endPulse);
+  //timerPulse_.setCallback(endPulse);
   
   // Initialisation du PID
   pid_.setGains(0.25,0.1 ,0);
@@ -209,27 +202,55 @@ void InitDream()
   pid_.setAtGoalFunc(PIDgoalReached);
   pid_.setEpsilon(0.001);
   pid_.setPeriod(200);
-
   //IMU-------------
-    //BNO = new bnoRead;
+
   //PinMode
   pinMode(MAGPIN, OUTPUT); // Definition du IO
 
-
-
-
-  return ;
+  deez.init();
+  //return ;
 }
 
 //--  PID  -----------------------------------------------------------------------
 double PIDmeasurement(){
   // To do
+  return 0;
 }
 void PIDcommand(double cmd){
   // To do
 }
 void PIDgoalReached(){
   // To do
+}
+
+bool PIDabsorbtion(){
+  delay(50);
+  float mesure_angle; // A ENLEVER ET REMPLACER PAR VALEUR DU BNO   en deg
+  float mesure_vitesse_angulaire; // A ENLEVER ET REMPLACER PAR VALEUR DU BNO   en deg/s
+
+  float erreur_live = 0;
+  float erreur_tot = 0;
+  float erreur_avant = 0;
+  float temp = 0;
+  float pid = 0;
+  float kp = 0.004125;
+  float ki = 0.0001;
+  float kd = 0.004125;
+
+  while(mesure_angle<-10 && mesure_angle>10 && mesure_vitesse_angulaire>20){
+    erreur_live = mesure_angle + mesure_vitesse_angulaire/2;
+    erreur_tot = erreur_tot + erreur_live;
+    erreur_avant = temp - erreur_live;
+    temp = erreur_live;
+
+    pid = kp*erreur_live + ki*erreur_tot + kd*erreur_avant;
+    if(pid>1){pid=1;}
+    if(pid<-1){pid=-1;}
+    deez.setMotorPWM(0, pid);
+  }
+  deez.setMotorPWM(0, 0);
+  Serial.println("Bien joue le bot");
+  return 1;
 }
 
 //--  Aimant  -----------------------------------------------------------------------
@@ -245,53 +266,28 @@ void Magnet(bool StateMagnet)
   }
 }
 
+//--  BNO055  ---(fuck jo)--------------------------------------------------------------------
+/*float AlphaPendule(float TableauBNO[4] )
+{
+  float LiveTime = millis();
+
+  float PrevOmega = TableauBNO[0];
+  float PrevTime = TableauBNO[1];
+  float LiveOmega = TableauBNO[2];
+
+  float DeltaTime = LiveTime - PrevTime;
+  float DeltaOmega = LiveOmega - PrevOmega;
+  float Alpha = DeltaOmega/DeltaTime;
+
+  TableauBNO[0]= LiveOmega;
+  TableauBNO[1]= LiveTime;
+  TableauBNO[3]= Alpha;
+
+  return TableauBNO;
+
+}*/
 
 
 
-//--  Motor -------------------------------------
-
-//--  Motor -------------------------------------
-//  tableau[0] = previus Time
-//  tableau[1] = previus pulse
-//  tableau[2] = previus motor speed
-//  tableau[3] = previus motor acceleration
-
-
-
-
-void getDataEncoder(double *tableauEncoder)
-{  
-  double R = 0.035;
-  double C = 3.1416*R*R;
-  double Kg = 25; 
-  double ppt = 46;
-  double dpp = C/(Kg*ppt);
-
-    double PrevTime = tableauEncoder[0];
-    double PrevPulse = tableauEncoder[1];
-    double PrevVitesse = tableauEncoder[2];
-    double millisecondes = millis();
-    unsigned long LiveTime = millisecondes/1000;
-    double LivePulse = AX_.readEncoder(0)*dpp;
-   
-    double DeltaTime = LiveTime - PrevTime;
-    Serial.println(DeltaTime);
-
-
-      // vitesse
-    double DeltaPulse = LivePulse - PrevPulse;
-    double VitesseMotor = DeltaPulse / DeltaTime;
-    
-      // acceleration
-    double DeltaVitesse = VitesseMotor - PrevVitesse;
-    double AccMotor = DeltaVitesse / DeltaTime;
-
-    tableauEncoder[0] = LiveTime;
-    tableauEncoder[1] = LivePulse;
-    tableauEncoder[2] = VitesseMotor;
-    tableauEncoder[3] = AccMotor;
-}
-
-
-
+//--  Rb-see-473  ---(fuck jo)-----------------------------------------------------
 
