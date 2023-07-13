@@ -17,14 +17,19 @@ void setup()
 
 void loop() 
 { 
-BNO = new bnoRead;
-double tableau[4];
-double *tableauEncoder= tableau;
-tableauEncoder[0]=0;
-tableauEncoder[1]=0;
-tableauEncoder[2]=0;
-tableauEncoder[3]=0;
-int allo = 0;
+  //Serial.println(AnglesPendule);
+
+
+
+
+  /*BNO = new bnoRead;
+  double tableau[4];
+  double *tableauEncoder= tableau;
+  tableauEncoder[0]=0;
+  tableauEncoder[1]=0;
+  tableauEncoder[2]=0;
+  tableauEncoder[3]=0;
+  int allo = 0;
 
   while(1)
   {
@@ -65,7 +70,7 @@ int allo = 0;
     
 
   // Motor
-//delay(00);
+  //delay(00);
   if (allo%10 == 0 )
   {
     getDataEncoder(tableauEncoder);
@@ -85,7 +90,7 @@ int allo = 0;
     }
     else
     {   AX_.setMotorPWM(0,0);}
-*/
+
 
     // mise a jour des chronometres
     timerSendMsg_.update();
@@ -94,5 +99,5 @@ int allo = 0;
     // mise à jour du PID
     pid_.run();
     allo++;
-  }
+  }*/
 }
