@@ -262,33 +262,54 @@ void Magnet(bool StateMagnet)
 void getDataEncoder(double *tableauEncoder)
 {  
   double R = 0.035;
-  double C = 3.1416*R*R;
-  double Kg = 25; 
-  double ppt = 46;
-  double dpp = C/(Kg*ppt);
+  double C = 3.1416*(2*R);
+  double Kg = 18.75/2; 
+  double ppt = 64;
+  double dpp = C/(ppt*Kg);
+  
 
     double PrevTime = tableauEncoder[0];
     double PrevPulse = tableauEncoder[1];
     double PrevVitesse = tableauEncoder[2];
     double millisecondes = millis();
-    unsigned long LiveTime = millisecondes/1000;
+
+    //Serial.println("Millis: ");
+    //Serial.println(millisecondes , 16);
+    double LiveTime = millisecondes/1000.0;
+
+    //Serial.println("Livetime: ");
+    //Serial.println(LiveTime , 16);
+
+    //Serial.println(PrevPulse , 16);
+
     double LivePulse = AX_.readEncoder(0)*dpp;
-   
+  
     double DeltaTime = LiveTime - PrevTime;
-    Serial.println(DeltaTime);
+
+    //Serial.println("Prevtime: ");
+    //Serial.println(PrevTime , 16);
+    //Serial.println(DeltaTime);
 
 
       // vitesse
     double DeltaPulse = LivePulse - PrevPulse;
-    double VitesseMotor = DeltaPulse / DeltaTime;
+    double LiveVitesse = DeltaPulse / DeltaTime;
     
       // acceleration
-    double DeltaVitesse = VitesseMotor - PrevVitesse;
+    double DeltaVitesse = LiveVitesse - PrevVitesse;
+
+    //Serial.println("DeltaVitesse: ");
+    //Serial.println(DeltaVitesse , 16);
+
+    //Serial.println("DeltaTime: ");
+    //Serial.println(DeltaTime , 16);
     double AccMotor = DeltaVitesse / DeltaTime;
+    Serial.println("AccMotor: ");
+    Serial.println(AccMotor , 16);
 
     tableauEncoder[0] = LiveTime;
     tableauEncoder[1] = LivePulse;
-    tableauEncoder[2] = VitesseMotor;
+    tableauEncoder[2] = LiveVitesse;
     tableauEncoder[3] = AccMotor;
 }
 

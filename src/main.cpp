@@ -29,16 +29,16 @@ int allo = 0;
   while(1)
   {
 
-    BNO->setOmega();
-    BNO->setAlpha();
-    BNO->getAngle();
+    //BNO->setOmega();
+    //BNO->setAlpha();
+    //BNO->getAngle();
 
-    Serial.print(">Omega:");
-    Serial.println(BNO->getOmega());
-    Serial.print(">Alpha:");
-    Serial.println(BNO->getAlpha());  
-    Serial.print(">Angle:");
-    Serial.println(BNO->getAngle());
+    //Serial.print(">Omega:");
+    //Serial.println(BNO->getOmega());
+    //Serial.print(">Alpha:");
+    //Serial.println(BNO->getAlpha());  
+    //Serial.print(">Angle:");
+    //Serial.println(BNO->getAngle());
 
 
 
@@ -66,19 +66,21 @@ int allo = 0;
 
   // Motor
 //delay(00);
-  if (allo%10 == 0 )
-  {
+  
+  
     getDataEncoder(tableauEncoder);
-
-    Serial.print("Time:");
-    Serial.println(tableauEncoder[0]);
-    Serial.print("Position:");
-    Serial.println(tableauEncoder[1]);
-    Serial.print("Vitesse:");
-    Serial.println(tableauEncoder[2]);
-    Serial.print("Acceleration:");
-    Serial.println(tableauEncoder[3]);
-  }
+    if(allo%10 == 0)
+    {
+   // Serial.print("Time:");
+    //Serial.println(tableauEncoder[0]);
+    //Serial.print("Position:");
+    //Serial.println(tableauEncoder[1], 16);
+    //Serial.print("Vitesse:");
+    //Serial.println(tableauEncoder[2] , 16);
+    //Serial.print(">Acceleration: ");
+    //Serial.println(tableauEncoder[3] , 16);
+    //Serial.println(AX_.readEncoder(0));
+    }
     /*if (tableauEncoder[1]<800 )
     {
       AX_.setMotorPWM(0,0.25);
