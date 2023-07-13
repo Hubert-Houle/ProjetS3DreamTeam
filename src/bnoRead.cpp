@@ -25,9 +25,8 @@ float bnoRead::getAngle()
   
   sensors_event_t event; 
   bno.getEvent(&event);
-  AnglesPendule = bno.getQuat();
+  AnglesPendule = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
 
-  AnglesPendule.toEuler();
   if (AnglesPendule.x() >= 180)
   {
     correctAngle = 360 - AnglesPendule.x();
@@ -38,7 +37,7 @@ float bnoRead::getAngle()
     correctAngle = 0 - AnglesPendule.x();
   }
   return correctAngle;
-  delay(200);
+
 }
 
 
