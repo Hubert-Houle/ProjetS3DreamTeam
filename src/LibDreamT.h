@@ -1,3 +1,6 @@
+#ifndef LIBDREAMT_H
+#define LIBDREAMT_H
+
 #include <LibS3GRO.h>
 #include <ArduinoJson.h>
 #include <Arduino.h>
@@ -7,6 +10,7 @@
 #include <utility/imumaths.h>
 #include "RB-See-473.h"
 #include "bnoRead.h"
+#include "encodeur.h"
 
 
 //------------------------------ Constantes ---------------------------------
@@ -314,5 +318,5 @@ void getDataEncoder(double *tableauEncoder)
 }
 
 
-
+#endif
 
