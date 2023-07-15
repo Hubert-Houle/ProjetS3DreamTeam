@@ -7,6 +7,9 @@ MainWindow::MainWindow(int updateRate, QWidget *parent):
     // Constructeur de la classe
     // Initialisation du UI
     ui = new Ui::MainWindow;
+    dialogSetParcour = new SetParcour();
+    dialogSetPID = new DialogSetPID();
+    dialogElectrique = new DialogElectrique(&courant, &tension, &puissance, &energieUtilise, &newTime_);
     ui->setupUi(this);
 
     // Initialisation du graphique
@@ -21,12 +24,16 @@ MainWindow::MainWindow(int updateRate, QWidget *parent):
     connectSpinBoxes();
     connectTextInputs();
     connectComboBox();
+    connectDialog();
 
     // Recensement des ports
     portCensus();
 
     // initialisation du timer
     updateTimer_.start();
+
+    // init des dialogs
+
 }
 
 MainWindow::~MainWindow(){
@@ -63,17 +70,13 @@ void MainWindow::receiveFromSerial(QString msg){
 
             // Affichage des valeurs electriques
             if(jsonObj.contains("current") && jsonObj.contains("voltage") && jsonObj.contains("time")){
-                double courant = jsonObj["current"].toDouble();
-                double tension = jsonObj["Tension"].toDouble();
-                double puissance = courant * tension;
+                courant = jsonObj["current"].toDouble();
+                tension = jsonObj["voltage"].toDouble();
+                puissance = courant * tension;
                 newTime_ = jsonObj["time"].toDouble();
-                energieConsomme_ +=  (newTime_ - lastTime_)/1000 * puissance;
+                energieUtilise+=  (newTime_ - lastTime_)/1000 * puissance;
                 lastTime_ = newTime_;
-
-                ui->label_Courant->setText(QString::number(courant));
-                ui->label_Tension->setText(QString::number(tension));
-                ui->label_Puissance->setText(QString::number(puissance));
-                ui->label_Energie->setText(QString::number(energieConsomme_));
+                emit updateElectrique();
             }
 
             // Affichage des donnees dans le graph
@@ -115,7 +118,6 @@ void MainWindow::connectButtons(){
     // Fonction de connection du boutton Send
     connect(ui->pulseButton, SIGNAL(clicked()), this, SLOT(sendPulseStart()));
     connect(ui->checkBox, SIGNAL(stateChanged(int)), this, SLOT(manageRecording(int)));
-    connect(ui->pushButton_Params, SIGNAL(clicked()), this, SLOT(sendPID()));
 }
 
 void MainWindow::connectSpinBoxes(){
@@ -128,6 +130,16 @@ void MainWindow::connectTextInputs(){
     // Fonction de connection des entrees de texte
     connect(ui->JsonKey, SIGNAL(returnPressed()), this, SLOT(changeJsonKeyValue()));
     JsonKey_ = ui->JsonKey->text();
+}
+void MainWindow::connectDialog(){
+    // bouton dialog
+    connect(dialogSetParcour, SIGNAL(acceptButtonPressed()),this, SLOT(dialogParaPaAccepted()));
+    connect(dialogSetPID, SIGNAL(acceptButtonPressed()),this,SLOT(dialogParaPIDAccepted()));
+    connect(dialogElectrique, SIGNAL(quitPressed()),this,SLOT(dialogElectriqueQuit()));
+
+    // update
+    connect(this,SIGNAL(updateElectrique()),dialogElectrique, SLOT(updateInfo()));
+
 }
 
 void MainWindow::connectComboBox(){
@@ -160,18 +172,12 @@ void MainWindow::changeJsonKeyValue(){
 }
 void MainWindow::sendPID(){
     // Fonction SLOT pour envoyer les paramettres de pulse
-    double goal = ui->lineEdit_DesVal->text().toDouble();
-    double Kp = ui->lineEdit_Kp->text().toDouble();
-    double Ki = ui->lineEdit_Ki->text().toDouble();
-    double Kd = ui->lineEdit_Kd->text().toDouble();
-    double thresh = ui->lineEdit_Thresh->text().toDouble();
     // pour minimiser le nombre de decimales( QString::number)
 
-    QJsonArray array = { QString::number(Kp, 'f', 2),
-                         QString::number(Ki, 'f', 2),
-                         QString::number(Kd, 'f', 2),
-                         QString::number(thresh, 'f', 2),
-                         QString::number(goal, 'f', 2)
+    QJsonArray array = { QString::number(kp, 'f', 2),
+                         QString::number(ki, 'f', 2),
+                         QString::number(kd, 'f', 2),
+                         QString::number(setpoint, 'f', 2)
                        };
     QJsonObject jsonObject
     {
@@ -189,6 +195,17 @@ void MainWindow::sendPulseSetting(){
     {// pour minimiser le nombre de decimales( QString::number)
         {"pulsePWM", QString::number(PWM_val)},
         {"pulseTime", duration_val}
+    };
+    QJsonDocument doc(jsonObject);
+    QString strJson(doc.toJson(QJsonDocument::Compact));
+    sendMessage(strJson);
+}
+
+void MainWindow::sendParcourSetting(int distanceObstacle, int distanceDepot){
+    QJsonObject jsonObject
+    {// pour minimiser le nombre de decimales( QString::number)
+        {"DistanceObstacle", QString::number(distanceObstacle)},
+        {"DistanceDepot", distanceDepot}
     };
     QJsonDocument doc(jsonObject);
     QString strJson(doc.toJson(QJsonDocument::Compact));
@@ -253,3 +270,64 @@ void MainWindow::onPeriodicUpdate(){
     // Fonction SLOT appelee a intervalle definie dans le constructeur
     qDebug().noquote() << "*";
 }
+
+
+void MainWindow::on_actionParametre_Parcour_triggered(){
+    dialogSetParcour->show();
+}
+void MainWindow::on_actionParametre_PID_triggered()
+{
+    dialogSetPID->show();
+}
+
+void MainWindow::dialogParaPaCancel(){
+    dialogSetParcour->hide();
+}
+void MainWindow::dialogParaPaAccepted(){
+     qDebug().noquote() << "Parcour Setting accepted";
+
+     distanceDepot = dialogSetParcour->getDD();
+     distanceObstacle = dialogSetParcour->getDO();
+     sendParcourSetting(distanceObstacle,distanceObstacle);
+     dialogSetParcour->hide();
+}
+void MainWindow::dialogParaPIDCancel(){
+     qDebug().noquote() << "PID Setting accepted";
+     dialogSetPID->hide();
+}
+void MainWindow::dialogParaPIDAccepted(){
+     qDebug().noquote() << "PID Setting accepted";
+
+     kp = dialogSetPID->getP();
+     ki = dialogSetPID->getI();
+     kd = dialogSetPID->getD();
+     setpoint = dialogSetPID->getSP();
+     dialogSetPID->hide();
+     sendPID();
+}
+
+void MainWindow::dialogElectriqueQuit()
+{
+    dialogElectrique->setInactive();
+    dialogElectrique->hide();
+}
+
+
+
+
+void MainWindow::on_actionElectrique_triggered()
+{
+    qDebug().noquote() << "Electrique Open";
+    dialogElectrique->show();
+    dialogElectrique->setActive();
+}
+
+
+void MainWindow::on_actionElectrique_triggered(bool checked)
+{
+    bool newt = checked;
+    checked = newt;
+    dialogElectrique->show();
+    dialogElectrique->setActive();
+}
+
