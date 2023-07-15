@@ -23,7 +23,7 @@ DenisCodeur = new encodeur;
 
   while(1)
   {
-    PID_absorbtion(BNO, 0.15, 0.0001, 0);
+    PID_absorbtion(BNO, 0.15, 0.0001, 0.5);
     //PID_absorbtion(BNO, -0.03, -0.0001, -0.0001);
 
     if(shouldRead_){
@@ -46,5 +46,5 @@ DenisCodeur = new encodeur;
     // mise à jour du PID
     pid_.run();
     //allo++;
-  }}}
+  }
 }
