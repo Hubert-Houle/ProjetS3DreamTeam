@@ -252,7 +252,7 @@ bool PID_absorbtion(bnoRead* bNo, float kp, float ki, float kd){
   DT_pid* PID_angle = new DT_pid(&zero, &angle, 2*valeur[0]/3, 2*valeur[1]/3, 2*valeur[2]/3);
   DT_pid* PID_omega = new DT_pid(&zero, &omega, valeur[0]/3, valeur[1]/3, valeur[2]/3);
 
-  while((angle<-7 || angle>7) && (omega>10 || omega<-10)){
+  while((angle<-4 || angle>4) && (omega>10 || omega<-10)){
     tot = PID_angle->response_Sum() + PID_omega->response_Sum();
     
     if(tot>1){tot=1;}
