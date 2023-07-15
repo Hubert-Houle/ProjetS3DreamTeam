@@ -25,16 +25,25 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
         csvwriter.cpp \
+        dialogelectrique.cpp \
+        dialogsetParcours.cpp \
+        dialogsetpid.cpp \
         main.cpp \
         mainwindow.cpp \
         serialprotocol.cpp
 
 HEADERS += \
         csvwriter.h \
+        dialogelectrique.h \
+        dialogsetParcours.h \
+        dialogsetpid.h \
         mainwindow.h \
         serialprotocol.h
 
 FORMS += \
+        dialogelectrique.ui \
+        dialogsetParcours.ui \
+        dialogsetpid.ui \
         mainwindow.ui
 
 DISTFILES +=

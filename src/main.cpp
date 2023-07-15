@@ -18,11 +18,12 @@ void setup()
 void loop() 
 { 
 BNO = new bnoRead;
-encodeur Denis_codeur;
+DenisCodeur = new encodeur;
 
 
   while(1)
   {
+    PID_absorbtion(BNO, 0.1, 0.0001, 0.0001);
     //PID_absorbtion(BNO, -0.03, -0.0001, -0.0001);
 
 
@@ -63,18 +64,9 @@ encodeur Denis_codeur;
   // Magnet
     Magnet(MagnetOff);
 
-  // BNO
-  
-    //BNO.setOmega();
-
-    //Serial.println(BNO.setOmega());
-    
-
-
-
     // mise a jour des chronometres
-    //timerSendMsg_.update();
-    //timerPulse_.update();
+    timerSendMsg_.update();
+    timerPulse_.update();
   
     // mise à jour du PID
     pid_.run();
