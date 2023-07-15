@@ -19,17 +19,17 @@ void loop()
 { 
 BNO = new bnoRead;
 DenisCodeur = new encodeur;
-float SP_position=0.1;
-DT_pid *ptrPID_position= new DT_pid(&SP_position,(float*) &(DenisCodeur->Position), (float) 0.1, (float)0.001, (float)0);
+float SP_position=-1;
+DT_pid *ptrPID_position= new DT_pid(&SP_position,(float*) &(DenisCodeur->Position), (float) 1.75 ,(float) 0.00001, (float) 0.00001);
 
 
 
   while(1)
   {
-    PID_absorbtion(BNO, 0.1, 0.0001, 0.0001);
+    //PID_absorbtion(BNO, 0.1, 0.0001, 0.0001);
 	
     fct_PID_position(ptrPID_position);
- 
+    
     if(shouldRead_){
     readMsg();
   }
