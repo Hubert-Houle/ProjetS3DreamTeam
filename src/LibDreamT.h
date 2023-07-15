@@ -11,6 +11,7 @@
 #include "RB-See-473.h"
 #include "bnoRead.h"
 #include "encodeur.h"
+#include "DT_pid.h"
 
 
 //------------------------------ Constantes ---------------------------------
@@ -69,6 +70,7 @@ void Magnet();
 double PIDmeasurement();
 void PIDcommand(double cmd);
 void PIDgoalReached();
+bool PID_absorbtion(bnoRead* bNo, DT_pid* pid);
   //Motor
 void getDataEncoder(double tableauEncodor[4]);
 //int32_t ArduinoX::readEncoder(uint8_t id);
@@ -235,6 +237,31 @@ void PIDcommand(double cmd){
 void PIDgoalReached(){
   // To do
 }
+bool PID_absorbtion(bnoRead* bNo){
+  double tot;
+  float valeur[3] = {-0.03, -0.001, -0.004125}; // {KP, KI, KD}
+  float zero = 0;
+  float angle = bNo->getAngle();
+  float omega = bNo->getOmega();
+  DT_pid* PID_angle = new DT_pid(&zero, &angle, 2*valeur[0]/3, 2*valeur[1]/3, 2*valeur[2]/3);
+  DT_pid* PID_omega = new DT_pid(&zero, &omega, valeur[0]/3, valeur[1]/3, valeur[2]/3);
+
+  while((angle<-10 || angle>10) && (omega>20 || omega<-20)){
+    tot = PID_angle->response_Sum() + PID_omega->response_Sum();
+    
+    if(tot>1){tot=1;}
+    if(tot<-1){tot=-1;}
+    AX_.setMotorPWM(0, tot);
+
+    angle = bNo->getAngle();
+    omega = bNo->getOmega();
+  }
+  AX_.setMotorPWM(0, 0);
+  Serial.println("Bien joue le bot!");
+  delete PID_angle, PID_omega;
+  return 1;
+}
+
 
 //--  Aimant  -----------------------------------------------------------------------
 void Magnet(bool StateMagnet)

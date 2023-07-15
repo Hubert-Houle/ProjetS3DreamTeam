@@ -1,9 +1,9 @@
 
 #include "DT_pid.h"
 
-DT_pid::DT_pid(double* IN_SP,double* IN_PV,double IN_KP,double IN_KI,double IN_KD)
+DT_pid::DT_pid(float* IN_SPk,float* IN_PV,float IN_KP,float IN_KI,float IN_KD)
 {
-	SP=IN_SP;
+	SPk=IN_SPk;
 	PV=IN_PV;
 	
 	KP=IN_KP;
@@ -19,8 +19,8 @@ DT_pid::DT_pid(double* IN_SP,double* IN_PV,double IN_KP,double IN_KI,double IN_K
 
 void DT_pid::erreurFCN()
 {
-	erreur_D=erreur_P-(*SP-*PV);
-	erreur_P=*SP-*PV;	
+	erreur_D=erreur_P-(*SPk-*PV);
+	erreur_P=*SPk-*PV;	
 	erreur_I+=erreur_P;
 	
 		
@@ -28,25 +28,25 @@ void DT_pid::erreurFCN()
 
 
 
-double DT_pid::P()
+float DT_pid::P()
 {
 
 	return KP*erreur_P;
 }
 
-double DT_pid::I()
+float DT_pid::I()
 {
 
 	return KI*erreur_I;
 }
 
-double DT_pid::D()
+float DT_pid::D()
 {
 
 	return KD*erreur_D;
 }
 
-double DT_pid::response_Sum()
+float DT_pid::response_Sum()
 {
 
 
