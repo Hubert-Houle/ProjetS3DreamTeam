@@ -28,7 +28,7 @@ DenisCodeur = new encodeur;
 
     if(shouldRead_){
     readMsg();
-  }
+    }
     if(shouldSend_){
     sendMsg();
   }
@@ -46,5 +46,5 @@ DenisCodeur = new encodeur;
     // mise à jour du PID
     pid_.run();
     //allo++;
-  }
+  }}}
 }
