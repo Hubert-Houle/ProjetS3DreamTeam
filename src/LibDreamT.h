@@ -237,9 +237,9 @@ void PIDcommand(double cmd){
 void PIDgoalReached(){
   // To do
 }
-bool PID_absorbtion(bnoRead* bNo){
+bool PID_absorbtion(bnoRead* bNo, float kp, float ki, float kd){
   double tot;
-  float valeur[3] = {-0.03, -0.001, -0.004125}; // {KP, KI, KD}
+  float valeur[3] = {kp, ki, kd};
   float zero = 0;
   float angle = bNo->getAngle();
   float omega = bNo->getOmega();
