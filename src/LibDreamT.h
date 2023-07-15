@@ -132,10 +132,11 @@ void sendMsg(){
   doc["isGoal"] = pid_.isAtGoal();
   doc["actualTime"] = pid_.getActualDt();
   doc["Angle"] = BNO->getAngle();
-  doc["Vitesse Angulaire"] = BNO->getOmega();
-  doc["Position"] = DenisCodeur->getPosition();
-  doc["Vitesse"] = DenisCodeur->getVitesse();
-  doc["Acceleration"] = DenisCodeur->getAccel();
+  doc["Omega"] = BNO->getOmega();
+  doc["Alpha"] = BNO->getAlpha();
+  doc["PositionRobot"] = DenisCodeur->getPosition();
+  doc["VitesseRobot"] = DenisCodeur->getVitesse();
+  doc["AccelerationRobot"] = DenisCodeur->getAccel();
   // Serialisation
   serializeJson(doc, Serial);
   // Envoit
