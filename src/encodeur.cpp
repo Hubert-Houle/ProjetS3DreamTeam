@@ -4,13 +4,7 @@
 encodeur::encodeur()
 {
     LePlusBeauEncodeurDuMonde = new ArduinoX;
-
-
-    LePlusBeauEncodeurDuMonde->setMotorPWM(0, 0);
-    LePlusBeauEncodeurDuMonde->setMotorPWM(1, 0);
-
-    LePlusBeauEncodeurDuMonde->setMotorPWM(0,0);
-    LePlusBeauEncodeurDuMonde->setMotorPWM(1,0);
+    LePlusBeauEncodeurDuMonde->init();
 
 
 }
@@ -28,7 +22,6 @@ double encodeur::getPosition()
     Position = LePlusBeauEncodeurDuMonde->readEncoder(0)*dpp;
     //Position = AX_.readEncoder(0)*dpp;
     PrevPosition = Position;
-
     return Position;
 }
 
@@ -36,21 +29,21 @@ double encodeur::getPosition()
 
 double encodeur::getVitesse()
 {
-
-    double PositionTemp = PrevPosition;
-    getPosition();
-
     double millisecondes = millis();
-    LiveTime = millisecondes/1000.0;
-
-    double DeltaPosition = Position - PositionTemp;
+    LiveTime = millisecondes/1000.0;    
     double DeltaTime = LiveTime - PrevTime;
+    if(DeltaTime > 0.01)
+    {
+        double PositionTemp = PrevPosition;
+        getPosition();
 
-    Vitesse = DeltaPosition / DeltaTime;
+        double DeltaPosition = Position - PositionTemp;
+ 
+        Vitesse = DeltaPosition / DeltaTime;
 
-    PrevTime = LiveTime;
-    PrevVitesse = Vitesse;
-
+        PrevTime = LiveTime;
+        PrevVitesse = Vitesse;
+    }
     return Vitesse;
 }
 
@@ -58,15 +51,22 @@ double encodeur::getVitesse()
 
 double encodeur::getAccel()
 {
-
-    double VitesseTemp = PrevVitesse;
+    double millisecondes = millis();
+    LiveTime = millisecondes/1000.0;  
     double PrevTimeTemporaire = PrevTime;
-    getVitesse();
-
-    double DeltaVitesse = Vitesse - VitesseTemp;
     double DeltaTime = LiveTime - PrevTimeTemporaire;
 
-    Acceleration = DeltaVitesse / DeltaTime;
+
+
+   if(DeltaTime > 0.01)
+    {        
+        double VitesseTemp = PrevVitesse;
+        getVitesse();
+
+        double DeltaVitesse = Vitesse - VitesseTemp;
+
+        Acceleration = DeltaVitesse / DeltaTime;
+    }
 
     return Acceleration;
 }
