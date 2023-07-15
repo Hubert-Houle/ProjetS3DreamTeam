@@ -229,7 +229,8 @@ void InitDream()
 
 //--  PID  -----------------------------------------------------------------------
 double PIDmeasurement(){
-  // To do
+  double GROSSE_PUTE = 0;
+  return GROSSE_PUTE;
 }
 void PIDcommand(double cmd){
   // To do
@@ -258,7 +259,8 @@ bool PID_absorbtion(bnoRead* bNo, float kp, float ki, float kd){
   }
   AX_.setMotorPWM(0, 0);
   Serial.println("Bien joue le bot!");
-  delete PID_angle, PID_omega;
+  delete PID_angle;
+  delete PID_omega;
   return 1;
 }
 
