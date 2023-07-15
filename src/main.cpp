@@ -18,16 +18,22 @@ void setup()
 void loop() 
 { 
 BNO = new bnoRead;
-double tableau[4];
-double *tableauEncoder= tableau;
-tableauEncoder[0]=0;
-tableauEncoder[1]=0;
-tableauEncoder[2]=0;
-tableauEncoder[3]=0;
-int allo = 0;
+encodeur Denis_codeur;
+
 
   while(1)
   {
+    
+
+
+    Serial.print("Position "); Serial.println(Denis_codeur.getPosition(),4);
+
+    Serial.print("Vitesse "); Serial.println(Denis_codeur.getVitesse(),4);
+    
+    Serial.print("Acceleration "); Serial.println(Denis_codeur.getAccel(),4);
+
+
+
 
     //BNO->setOmega();
     //BNO->setAlpha();
@@ -55,7 +61,7 @@ int allo = 0;
   }
 
   // Magnet
-    Magnet(MagnetOn);
+    Magnet(MagnetOff);
 
   // BNO
   
@@ -64,37 +70,14 @@ int allo = 0;
     //Serial.println(BNO.setOmega());
     
 
-  // Motor
-//delay(00);
-  
-  
-    getDataEncoder(tableauEncoder);
-    if(allo%10 == 0)
-    {
-   // Serial.print("Time:");
-    //Serial.println(tableauEncoder[0]);
-    //Serial.print("Position:");
-    //Serial.println(tableauEncoder[1], 16);
-    //Serial.print("Vitesse:");
-    //Serial.println(tableauEncoder[2] , 16);
-    //Serial.print(">Acceleration: ");
-    //Serial.println(tableauEncoder[3] , 16);
-    //Serial.println(AX_.readEncoder(0));
-    }
-    /*if (tableauEncoder[1]<800 )
-    {
-      AX_.setMotorPWM(0,0.25);
-    }
-    else
-    {   AX_.setMotorPWM(0,0);}
-*/
+
 
     // mise a jour des chronometres
-    timerSendMsg_.update();
-    timerPulse_.update();
+    //timerSendMsg_.update();
+    //timerPulse_.update();
   
     // mise à jour du PID
     pid_.run();
-    allo++;
+    //allo++;
   }
 }
