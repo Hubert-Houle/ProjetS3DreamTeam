@@ -23,12 +23,15 @@ DenisCodeur = new encodeur;
 
   while(1)
   {
+  if(DenisCodeur->getPosition()>0.05){
+  while(DenisCodeur->getPosition()<1.6 || DenisCodeur->getPosition()>0.05){
+
     PID_absorbtion(BNO, 0.15, 0.0001, 0.0001);
     //PID_absorbtion(BNO, -0.03, -0.0001, -0.0001);
 
     if(shouldRead_){
     readMsg();
-  }
+    }
     if(shouldSend_){
     sendMsg();
   }
@@ -46,5 +49,5 @@ DenisCodeur = new encodeur;
     // mise à jour du PID
     pid_.run();
     //allo++;
-  }
+  }}}
 }
