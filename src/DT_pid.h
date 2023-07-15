@@ -7,30 +7,31 @@ class DT_pid
 {
 	public:
 
-		DT_pid(double* IN_SP,double* IN_PV,double IN_KP=0,double IN_KI=0,double IN_KD=0);
+		DT_pid(float* IN_SP,float* IN_PV,float IN_KP=0,float IN_KI=0,float IN_KD=0);
 
-		double erreur_P;
-		double erreur_I;
-		double erreur_D;
+		float erreur_P;
+		float erreur_I;
+		float erreur_D;
 		
-		double response_Sum();
+		float response_Sum();
 
 
 	private:
-		double* SP;
-		double* PV;
-		double CV;
+
+		float* SPk;
+		float* PV;
+		float CV;
 		
-		double KP;
-		double KI;
-		double KD;
+		float KP;
+		float KI;
+		float KD;
 
 
 
 		void erreurFCN();
-		double P();
-		double I();
-		double D();
+		float P();
+		float I();
+		float D();
 		
 };
 
