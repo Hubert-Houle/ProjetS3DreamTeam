@@ -23,7 +23,7 @@ encodeur Denis_codeur;
 
   while(1)
   {
-    PID_absorbtion(BNO, -0.03, -0.0001, -0.0001);
+    //PID_absorbtion(BNO, -0.03, -0.0001, -0.0001);
 
 
     Serial.print("Position "); Serial.println(Denis_codeur.getPosition(),4);
