@@ -19,8 +19,8 @@ DT_pid::DT_pid(double* IN_SP,double* IN_PV,double IN_KP,double IN_KI,double IN_K
 
 void DT_pid::erreurFCN()
 {
-	erreur_D=erreur_P-(SP-PV);
-	erreur_P=SP-PV;	
+	erreur_D=erreur_P-(*SP-*PV);
+	erreur_P=*SP-*PV;	
 	erreur_I+=erreur_P;
 	
 		
@@ -31,13 +31,13 @@ void DT_pid::erreurFCN()
 double DT_pid::P()
 {
 
-	return KP*erreur_I;
+	return KP*erreur_P;
 }
 
 double DT_pid::I()
 {
 
-	return KI*erreur_P;
+	return KI*erreur_I;
 }
 
 double DT_pid::D()
