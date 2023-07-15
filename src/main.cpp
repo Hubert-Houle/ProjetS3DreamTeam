@@ -25,7 +25,7 @@ DenisCodeur = new encodeur;
   {
   if(DenisCodeur->getPosition()>0.05){
   while(DenisCodeur->getPosition()>0.05 || DenisCodeur->getPosition()<1.6){
-    PID_absorbtion(BNO, 0.15, 0.0001, 0);
+    PID_absorbtion(BNO, 0.15, 0.0001, 0.5);
     //PID_absorbtion(BNO, -0.03, -0.0001, -0.0001);
 
     if(shouldRead_){
