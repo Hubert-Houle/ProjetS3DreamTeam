@@ -19,11 +19,16 @@ void loop()
 { 
 BNO = new bnoRead;
 DenisCodeur = new encodeur;
+float SP_position=0.5;
+DT_pid *ptrPID_position= new DT_pid(&SP_position, &DenisCodeur.position, 0.1,0.001,0);
+
 
 
   while(1)
   {
     PID_absorbtion(BNO, 0.1, 0.0001, 0.0001);
+	
+    fct_PID_position(ptrPID_position);
  
     if(shouldRead_){
     readMsg();
@@ -43,7 +48,7 @@ DenisCodeur = new encodeur;
     timerPulse_.update();
   
     // mise à jour du PID
-    pid_.run();
+    //pid_.run();
     //allo++;
   }
 }

@@ -72,6 +72,7 @@ double PIDmeasurement();
 void PIDcommand(double cmd);
 void PIDgoalReached();
 bool PID_absorbtion(bnoRead* bNo, DT_pid* pid);
+bool fct_PID_position(DT_pid* pid1);
   //Motor
 void getDataEncoder(double tableauEncodor[4]);
 //int32_t ArduinoX::readEncoder(uint8_t id);
@@ -242,6 +243,7 @@ void PIDcommand(double cmd){
 void PIDgoalReached(){
   // To do
 }
+
 bool PID_absorbtion(bnoRead* bNo, float kp, float ki, float kd){
   double tot;
   float valeur[3] = {kp, ki, kd};
@@ -267,6 +269,18 @@ bool PID_absorbtion(bnoRead* bNo, float kp, float ki, float kd){
   delete PID_omega;
   return 1;
 }
+
+ bool fct_PID_position(DT_pid* pid1){
+
+
+	float CV=pid1->response_Sum();
+
+	return (CV>1) ? 1: ((CV<-1) ? -1 : CV);  // retourner CV si entre 1 et -1 sinon retourner 1 ou -1
+	
+	
+
+ 	
+ }
 
 
 //--  Aimant  -----------------------------------------------------------------------
