@@ -35,6 +35,7 @@ VexQuadEncoder vexEncoder_;         // objet encodeur vex
 IMU9DOF imu_;                       // objet imu
 PID pid_;                           // objet PID
 bnoRead *BNO;                       // objet BNO
+encodeur *DenisCodeur;              // objet encodeur
 
 volatile bool shouldSend_ = false;  // drapeau prêt à envoyer un message
 volatile bool shouldRead_ = false;  // drapeau prêt à lire un message
@@ -131,6 +132,9 @@ void sendMsg(){
   doc["actualTime"] = pid_.getActualDt();
   doc["Angle"] = BNO->getAngle();
   doc["Vitesse Angulaire"] = BNO->getOmega();
+  doc["Position"] = DenisCodeur->getPosition();
+  doc["Vitesse"] = DenisCodeur->getVitesse();
+  doc["Acceleration"] = DenisCodeur->getAccel();
   // Serialisation
   serializeJson(doc, Serial);
   // Envoit

@@ -18,7 +18,7 @@ void setup()
 void loop() 
 { 
 BNO = new bnoRead;
-encodeur Denis_codeur;
+DenisCodeur = new encodeur;
 
 
   while(1)
@@ -26,11 +26,11 @@ encodeur Denis_codeur;
     PID_absorbtion(BNO, -0.03, -0.0001, -0.0001);
 
 
-    Serial.print("Position "); Serial.println(Denis_codeur.getPosition(),4);
+   // Serial.print("Position "); Serial.println(Denis_codeur.getPosition(),4);
 
-    Serial.print("Vitesse "); Serial.println(Denis_codeur.getVitesse(),4);
+   // Serial.print("Vitesse "); Serial.println(Denis_codeur.getVitesse(),4);
     
-    Serial.print("Acceleration "); Serial.println(Denis_codeur.getAccel(),4);
+   // Serial.print("Acceleration "); Serial.println(Denis_codeur.getAccel(),4);
 
 
 
@@ -73,8 +73,8 @@ encodeur Denis_codeur;
 
 
     // mise a jour des chronometres
-    //timerSendMsg_.update();
-    //timerPulse_.update();
+    timerSendMsg_.update();
+    timerPulse_.update();
   
     // mise à jour du PID
     pid_.run();
