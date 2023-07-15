@@ -246,6 +246,7 @@ bool PID_absorbtion(bnoRead* bNo, float kp, float ki, float kd){
   double tot;
   float valeur[3] = {kp, ki, kd};
   float zero = 0;
+  BNO->setOmega();
   float angle = bNo->getAngle();
   float omega = bNo->getOmega();
   DT_pid* PID_angle = new DT_pid(&zero, &angle, 2*valeur[0]/3, 2*valeur[1]/3, 2*valeur[2]/3);
