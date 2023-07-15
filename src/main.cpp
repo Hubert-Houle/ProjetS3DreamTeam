@@ -19,7 +19,7 @@ void loop()
 { 
 BNO = new bnoRead;
 DenisCodeur = new encodeur;
-float SP_position=0.5;
+float SP_position=0.1;
 DT_pid *ptrPID_position= new DT_pid(&SP_position,(float*) &(DenisCodeur->Position), (float) 0.1, (float)0.001, (float)0);
 
 
