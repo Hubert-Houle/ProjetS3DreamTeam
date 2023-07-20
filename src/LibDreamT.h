@@ -135,6 +135,7 @@ void sendMsg(){
   doc["Position"] = DenisCodeur->getPosition();
   doc["Vitesse"] = DenisCodeur->getVitesse();
   doc["Acceleration"] = DenisCodeur->getAccel();
+  //doc["Etat"] = Etat;
   // Serialisation
   serializeJson(doc, Serial);
   // Envoit
@@ -183,6 +184,12 @@ void readMsg(){
     pid_.setGoal(doc["setGoal"][4]);
     pid_.enable();
   }
+  /*parse_msg = doc["Etat"];
+  if(!parse_msg.isNull())
+    {
+      Etat = doc["Etat"];
+    }
+  */
 }
 
 
