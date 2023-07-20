@@ -19,9 +19,9 @@ class encodeur
 
         ArduinoX *LePlusBeauEncodeurDuMonde;
 
-        double R = 0.035;
+        double R = 0.036;
         double C = 3.1416*(2.00*R);
-        double Kg = 18.7500/2.00; 
+        double Kg = 25.0; 
         double ppt = 64.00;
         double dpp = C/(ppt*Kg);
 

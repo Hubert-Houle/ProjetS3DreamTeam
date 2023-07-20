@@ -12,12 +12,13 @@
 #include "bnoRead.h"
 #include "encodeur.h"
 #include "DT_pid.h"
+#include "math.h"
 
 
 //------------------------------ Constantes ---------------------------------
 
 #define BAUD            115200      // Frequence de transmission serielle
-#define UPDATE_PERIODE  100         // Periode (ms) d'envoie d'etat general
+#define UPDATE_PERIODE  10           // Periode (ms) d'envoie d'etat general
 
 #define MAGPIN          32          // J18     Port numerique pour electroaimant
 #define POTPIN          A5          // Port analogique pour le potentiometre
@@ -30,7 +31,7 @@
 
 #define POSITION_FIN_RAIL 1.5
 #define POSITION_DEBUT_RAIL 0
-#define GAIN_BARRIERE_VIRTUELLE -0.1
+#define GAIN_BARRIERE_VIRTUELLE 0
 //---------------------------- variables globales ---------------------------
 ArduinoX AX_;                       // objet arduinoX
 MegaServo servo_;                   // objet servomoteur
@@ -56,7 +57,7 @@ float Gxyz[3];                      // tableau pour giroscope
 float Mxyz[3];                      // tableau pour magnetometre
 
 // MEF
-int Etat;
+int Etat = 0;
 
 //Adafruit_BNO055 bno = Adafruit_BNO055(55);
 //imu::Vector<3> AnglesPendule;
@@ -141,7 +142,7 @@ void sendMsg(){
   doc["Position"] = DenisCodeur->getPosition();
   doc["Vitesse"] = DenisCodeur->getVitesse();
   doc["Acceleration"] = DenisCodeur->getAccel();
-  //doc["Etat"] = Etat;
+  doc["Etat"] = Etat;
   // Serialisation
   serializeJson(doc, Serial);
   // Envoit
@@ -190,12 +191,12 @@ void readMsg(){
     pid_.setGoal(doc["setGoal"][4]);
     pid_.enable();
   }
-  /*parse_msg = doc["Etat"];
+  parse_msg = doc["Etat"];
   if(!parse_msg.isNull())
     {
-      Etat = doc["Etat"];
+      Etat = doc["Etat"].as<int>();
     }
-  */
+  
 }
 
 
@@ -281,7 +282,7 @@ bool PID_absorbtion(bnoRead* bNo, encodeur* denis, bool magnet, float kp, float 
     pos = denis->getPosition();
   }
   AX_.setMotorPWM(0, 0);
-  Serial.println("Bien joue le bot!");
+  //Serial.println("Bien joue le bot!");
   delete PID_angle;
   delete PID_omega;
   return 1;
@@ -305,7 +306,7 @@ void Magnet(bool StateMagnet)
 
 
 //--  PID_lineaire -------------------------------------
- bool fct_PID_position(encodeur* enCodeur, DT_pid* pid1,DT_pid* pid2){
+ bool fct_PID_position(encodeur* enCodeur, DT_pid* pid1){
 
   float CV;
   float Barriere_Virtuelle=GAIN_BARRIERE_VIRTUELLE * (1/((POSITION_FIN_RAIL-enCodeur->getPosition())*(enCodeur->getVitesse()>0))+((POSITION_DEBUT_RAIL-enCodeur->getPosition())*(enCodeur->getVitesse()<0)));
@@ -315,7 +316,47 @@ void Magnet(bool StateMagnet)
 
   //pid1->setSP(CV);
 	CV=pid1->response_Sum();
-  CV+=Barriere_Virtuelle;
+  //CV+=Barriere_Virtuelle;
+
+  
+	AX_.setMotorPWM(0, (CV>1) ? 1: ((CV<-1) ? -1 : CV));  // retourner CV si entre 1 et -1 sinon retourner 1 ou -1
+	
+	return 1;
+
+ 	
+ }
+
+ bool fct_PID_omega(encodeur* enCodeur, DT_pid* pid1){
+
+  float CV;
+  float Barriere_Virtuelle=GAIN_BARRIERE_VIRTUELLE * (1/((POSITION_FIN_RAIL-enCodeur->getPosition())*(enCodeur->getVitesse()>0))+((POSITION_DEBUT_RAIL-enCodeur->getPosition())*(enCodeur->getVitesse()<0)));
+  //pid2->setSP(Barriere_Virtuelle);
+
+  
+
+  //pid1->setSP(CV);
+	CV=pid1->response_Sum();
+  //CV+=Barriere_Virtuelle;
+
+  
+	AX_.setMotorPWM(0, (CV>1) ? 1: ((CV<-1) ? -1 : CV));  // retourner CV si entre 1 et -1 sinon retourner 1 ou -1
+	
+	return 1;
+
+ 	
+ }
+
+  bool fct_PID_oscille(encodeur* enCodeur, DT_pid* pid1){
+
+  float CV;
+  float Barriere_Virtuelle=GAIN_BARRIERE_VIRTUELLE * (1/((POSITION_FIN_RAIL-enCodeur->getPosition())*(enCodeur->getVitesse()>0))+((POSITION_DEBUT_RAIL-enCodeur->getPosition())*(enCodeur->getVitesse()<0)));
+  //pid2->setSP(Barriere_Virtuelle);
+
+  
+
+  //pid1->setSP(CV);
+	CV=pid1->response_Sum();
+  //CV+=Barriere_Virtuelle;
 
   
 	AX_.setMotorPWM(0, (CV>1) ? 1: ((CV<-1) ? -1 : CV));  // retourner CV si entre 1 et -1 sinon retourner 1 ou -1

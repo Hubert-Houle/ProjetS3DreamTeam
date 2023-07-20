@@ -24,11 +24,13 @@ public:
     Adafruit_BNO055 bno;
     //sensors_event_t event;
 
+    float currentOmega = 0;
+
 private:
     float liveTime = 0;
     float prevTime = 0;
     float currenttime = 0;
-    float currentOmega = 0;
+    
     float prevOmega = 0;
     float Accel = 0;
     float correctAngle = 0;
