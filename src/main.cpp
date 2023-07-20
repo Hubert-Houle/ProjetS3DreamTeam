@@ -27,23 +27,33 @@ DT_pid *ptrPID_position= new DT_pid(&SP_position,(float*) &(DenisCodeur->Positio
 
   while(1)
   {
-   /* switch (Etat)
+   switch (Etat)
     {
         case 1 : 
           //Avance
-
+          SP_position= 0.5 ;
+          fct_PID_position(DenisCodeur , ptrPID_position ,ptrPID_position);
+            break;
 
         case 2 :
           //Stabilise
           PID_absorbtion(BNO, 0.15, 0.0001, 0.5);
+            break;
+
         case 3 :
           //Magnet
           Magnet(MagnetOn);
+            break;
+
         case 4 :
           //Oscillation
+          
         case 5 :
           //Traverse
-    }*/
+          SP_position= 1 ;
+          fct_PID_position(DenisCodeur , ptrPID_position ,ptrPID_position);
+            break;
+    }
 
 
 
