@@ -44,7 +44,6 @@ double encodeur::getVitesse()
         PrevTime = LiveTime;
         PrevVitesse = Vitesse;
     }
-    
     return Vitesse;
 }
 

@@ -58,7 +58,6 @@ float Mxyz[3];                      // tableau pour magnetometre
 // MEF
 int Etat;
 
-
 //Adafruit_BNO055 bno = Adafruit_BNO055(55);
 //imu::Vector<3> AnglesPendule;
 //imu::Vector<3> OmegaPendule;
@@ -142,6 +141,7 @@ void sendMsg(){
   doc["Position"] = DenisCodeur->getPosition();
   doc["Vitesse"] = DenisCodeur->getVitesse();
   doc["Acceleration"] = DenisCodeur->getAccel();
+  //doc["Etat"] = Etat;
   // Serialisation
   serializeJson(doc, Serial);
   // Envoit
@@ -190,6 +190,12 @@ void readMsg(){
     pid_.setGoal(doc["setGoal"][4]);
     pid_.enable();
   }
+  /*parse_msg = doc["Etat"];
+  if(!parse_msg.isNull())
+    {
+      Etat = doc["Etat"];
+    }
+  */
 }
 
 
@@ -249,25 +255,30 @@ void PIDcommand(double cmd){
 void PIDgoalReached(){
   // To do
 }
-bool PID_absorbtion(bnoRead* bNo, float kp, float ki, float kd){
+bool PID_absorbtion(bnoRead* bNo, encodeur* denis, bool magnet, float kp, float ki, float kd){
   double tot;
   float valeur[3] = {kp, ki, kd};
+  if(magnet==1){valeur[0]=kp*0.25;valeur[1]=ki*0.25;valeur[2]=kd*0.25;}
   float zero = 0;
   BNO->setOmega();
   float angle = bNo->getAngle();
   float omega = bNo->getOmega();
+  float pos_goal = denis->getPosition();
+  float pos = denis->getPosition();
   DT_pid* PID_angle = new DT_pid(&zero, &angle, 2*valeur[0]/3, 2*valeur[1]/3, 2*valeur[2]/3);
   DT_pid* PID_omega = new DT_pid(&zero, &omega, valeur[0]/3, valeur[1]/3, valeur[2]/3);
+  DT_pid* PID_pos = new DT_pid(&pos_goal, &pos, valeur[0]/3, valeur[1]/3, valeur[2]/3);
 
-  while((angle<-4 || angle>4) && (omega>10 || omega<-10)){
+  while((angle<-7 || angle>7) && (omega>10 || omega<-10)){
     tot = PID_angle->response_Sum() + PID_omega->response_Sum();
-    
+    Serial.println(PID_pos->response_Sum());
     if(tot>1){tot=1;}
     if(tot<-1){tot=-1;}
     AX_.setMotorPWM(0, tot);
 
     angle = bNo->getAngle();
     omega = bNo->getOmega();
+    pos = denis->getPosition();
   }
   AX_.setMotorPWM(0, 0);
   Serial.println("Bien joue le bot!");

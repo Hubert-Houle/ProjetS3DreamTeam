@@ -23,8 +23,6 @@ float SP_position=-1;
 DT_pid *ptrPID_position= new DT_pid(&SP_position,(float*) &(DenisCodeur->Position), (float) 1.75 ,(float) 0.00001, (float) 0.00001);
 
 
-
-
   while(1)
   {
    switch (Etat)
@@ -80,5 +78,6 @@ DT_pid *ptrPID_position= new DT_pid(&SP_position,(float*) &(DenisCodeur->Positio
 
     // mise à jour du PID
     pid_.run();
+    //allo++;
   }
 }
