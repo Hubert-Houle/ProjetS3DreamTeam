@@ -23,8 +23,8 @@ DenisCodeur = new encodeur;
 
   while(1)
   {
-    PID_absorbtion(BNO, DenisCodeur, 0, 0.15, 0.0001, 0.5);
-    PID_absorbtion(BNO, DenisCodeur, 0, 0.15, 0.0001, 0);
+    PID_absorbtion(BNO, 0.15, 0.0001, 0.5);
+    PID_absorbtion(BNO, 0.15, 0.0001, 0);
     //PID_absorbtion(BNO, -0.03, -0.0001, -0.0001);
 
     if(shouldRead_){
