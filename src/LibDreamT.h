@@ -52,9 +52,6 @@ float Axyz[3];                      // tableau pour accelerometre
 float Gxyz[3];                      // tableau pour giroscope
 float Mxyz[3];                      // tableau pour magnetometre
 
-// MEF
-int Etat;
-
 //Adafruit_BNO055 bno = Adafruit_BNO055(55);
 //imu::Vector<3> AnglesPendule;
 //imu::Vector<3> OmegaPendule;
