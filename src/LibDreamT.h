@@ -274,7 +274,7 @@ bool PID_absorbtion(bnoRead* bNo, float kp, float ki, float kd){
 
 
 	float CV=pid1->response_Sum();
-  Serial1.println((CV>1) ? 1: ((CV<-1) ? -1 : CV));
+
 	AX_.setMotorPWM(0, (CV>1) ? 1: ((CV<-1) ? -1 : CV));  // retourner CV si entre 1 et -1 sinon retourner 1 ou -1
 	
 	return 1;
