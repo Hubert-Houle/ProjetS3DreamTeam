@@ -14,6 +14,7 @@ class DT_pid
 		float erreur_D;
 		
 		float response_Sum();
+		void setSP(float IN_SPk);
 
 
 	private:

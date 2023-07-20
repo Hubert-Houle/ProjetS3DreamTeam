@@ -56,3 +56,8 @@ float DT_pid::response_Sum()
 	return CV;
 	
 }
+
+void DT_pid::setSP(float IN_SPk)
+{
+	*SPk=IN_SPk;
+}

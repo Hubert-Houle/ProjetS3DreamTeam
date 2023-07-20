@@ -28,6 +28,11 @@
 #define MagnetOn        1
 #define MagnetOff       0
 
+
+#define POSITION_FIN_RAIL 1.5
+#define POSITION_DEBUT_RAIL 0
+#define GAIN_BARRIERE_VIRTUELLE -0.1
+
 //---------------------------- variables globales ---------------------------
 ArduinoX AX_;                       // objet arduinoX
 MegaServo servo_;                   // objet servomoteur
@@ -72,7 +77,7 @@ double PIDmeasurement();
 void PIDcommand(double cmd);
 void PIDgoalReached();
 bool PID_absorbtion(bnoRead* bNo, DT_pid* pid);
-bool fct_PID_position(DT_pid* pid1);
+bool fct_PID_position(encodeur* enCodeur, DT_pid* pid1, DT_pid* pid2);
   //Motor
 void getDataEncoder(double tableauEncodor[4]);
 //int32_t ArduinoX::readEncoder(uint8_t id);
@@ -271,11 +276,19 @@ bool PID_absorbtion(bnoRead* bNo, float kp, float ki, float kd){
   return 1;
 }
 
- bool fct_PID_position(DT_pid* pid1){
+ bool fct_PID_position(encodeur* enCodeur, DT_pid* pid1,DT_pid* pid2){
 
+  float CV;
+  float Barriere_Virtuelle=GAIN_BARRIERE_VIRTUELLE * (1/((POSITION_FIN_RAIL-enCodeur->getPosition())*(enCodeur->getVitesse()>0))+((POSITION_DEBUT_RAIL-enCodeur->getPosition())*(enCodeur->getVitesse()<0)));
+  //pid2->setSP(Barriere_Virtuelle);
 
-	float CV=pid1->response_Sum();
+  
 
+  //pid1->setSP(CV);
+	CV=pid1->response_Sum();
+  CV+=Barriere_Virtuelle;
+
+  
 	AX_.setMotorPWM(0, (CV>1) ? 1: ((CV<-1) ? -1 : CV));  // retourner CV si entre 1 et -1 sinon retourner 1 ou -1
 	
 	return 1;
