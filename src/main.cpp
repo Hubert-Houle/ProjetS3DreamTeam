@@ -45,8 +45,8 @@ DT_pid *ptrPID_position= new DT_pid(&SP_position,(float*) &(DenisCodeur->Positio
 
 
 
-    PID_absorbtion(BNO, 0.15, 0.0001, 0.5);
-    PID_absorbtion(BNO, 0.15, 0.0001, 0);
+    //PID_absorbtion(BNO, 0.15, 0.0001, 0.5);
+    //PID_absorbtion(BNO, 0.15, 0.0001, 0);
     //PID_absorbtion(BNO, -0.03, -0.0001, -0.0001);
 
     if(shouldRead_){
