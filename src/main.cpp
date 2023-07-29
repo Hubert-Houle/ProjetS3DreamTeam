@@ -2,6 +2,12 @@
 /*------------------------------ Librairies ---------------------------------*/
 #include "LibDreamT.h" // Vos propres librairies
 
+
+
+/*---------------------------- Definitions du parcour -----------------------------*/
+#define POSITION_DEPOS -0.5
+
+
 /*---------------------------- fonctions "Main" -----------------------------*/
 
 void setup() 
@@ -35,7 +41,7 @@ DT_pid *ptrPID_oscille = new DT_pid(&SP_position,(float*) &(DenisCodeur->Positio
             break;
         case 1 : 
           //Avance
-          SP_position= -0.5 ;
+          SP_position= POSITION_DEPOS ;
           fct_PID_position(DenisCodeur , ptrPID_position);
             break;
 
