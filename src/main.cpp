@@ -26,7 +26,8 @@ void loop()
 BNO = new bnoRead;
 DenisCodeur = new encodeur;
 float SP_position=0;
-DT_pid *ptrPID_omega_fetch= new DT_pid(&SP_position,(float*) &(BNO->currentOmega), (float) 0.005,(float) 0.0000, (float) 0.0001);
+
+DT_pid *ptrPID_omega_fetch= new DT_pid(&SP_position,(float*) &(BNO->currentOmega), (float) 0.005,(float) 0.0000, (float) 0.0003);
 DT_pid *ptrPID_omega_ship= new DT_pid(&SP_position,(float*) &(BNO->currentOmega), (float) 0.003,(float) 0.0000, (float) 0.0001);
 DT_pid *ptrPID_position= new DT_pid(&SP_position,(float*) &(DenisCodeur->Position), (float) 5,(float) 0.00001, (float) 0.00001);
 DT_pid *ptrPID_oscille = new DT_pid(&SP_position,(float*) &(DenisCodeur->Position), (float) 5,(float) 0.00001, (float) 0.00001);
@@ -39,7 +40,7 @@ DT_pid *ptrPID_oscille = new DT_pid(&SP_position,(float*) &(DenisCodeur->Positio
   while(1)
   {
     BNO->setOmega();
-    Barriere_Virtuelle_global=GAIN_BARRIERE_VIRTUELLE * (1/((POSITION_FIN_RAIL-DenisCodeur->getPosition())*(DenisCodeur->getVitesse()>0))+((POSITION_DEBUT_RAIL-DenisCodeur->getPosition())*(DenisCodeur->getVitesse()<0)));
+    //Barriere_Virtuelle_global=GAIN_BARRIERE_VIRTUELLE * (1/((POSITION_FIN_RAIL-DenisCodeur->getPosition())*(DenisCodeur->getVitesse()>0))+((POSITION_DEBUT_RAIL-DenisCodeur->getPosition())*(DenisCodeur->getVitesse()<0)));
     
    switch (Etat)
     {
@@ -121,15 +122,17 @@ DT_pid *ptrPID_oscille = new DT_pid(&SP_position,(float*) &(DenisCodeur->Positio
         case 8 :
           //Stabilise
           fct_PID_omega(DenisCodeur , ptrPID_omega_ship);
-          if( abs(BNO->getOmega()) < 5)
+          if( abs(BNO->getOmega()) < 3 && BNO->getAngle() == 0)
               {
-                Etat = 3;
+                Etat = 9;
               }
           break;
 
         case 9 :
           //Stabilise
           Magnet(MagnetOff);
+          delay(10);
+          Etat = 0;
           break;
     }
    // SP_position=0.25*sin(2*PI*1*millis()/1000.0);

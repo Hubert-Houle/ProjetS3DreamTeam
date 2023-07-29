@@ -31,7 +31,7 @@
 
 #define POSITION_FIN_RAIL 1.5
 #define POSITION_DEBUT_RAIL 0
-#define GAIN_BARRIERE_VIRTUELLE 0
+#define GAIN_BARRIERE_VIRTUELLE 10
 //---------------------------- variables globales ---------------------------
 ArduinoX AX_;                       // objet arduinoX
 MegaServo servo_;                   // objet servomoteur
