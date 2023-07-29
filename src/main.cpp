@@ -31,6 +31,11 @@ DT_pid *ptrPID_omega_ship= new DT_pid(&SP_position,(float*) &(BNO->currentOmega)
 DT_pid *ptrPID_position= new DT_pid(&SP_position,(float*) &(DenisCodeur->Position), (float) 5,(float) 0.00001, (float) 0.00001);
 DT_pid *ptrPID_oscille = new DT_pid(&SP_position,(float*) &(DenisCodeur->Position), (float) 5,(float) 0.00001, (float) 0.00001);
 
+/*------------------------A ESSAYER/FAIRE
+  1- rajouter du D a omega_fetch pour qu'il ralentisse plus tot
+  2- Ajuster la traverse pour mieu amortir le pendule rendu l'autre coter
+  3- Lorsque le pickup du sapin est set up: mettre une condition pour switcher de l'etat 4 a 5
+*/
   while(1)
   {
     BNO->setOmega();
@@ -56,10 +61,14 @@ DT_pid *ptrPID_oscille = new DT_pid(&SP_position,(float*) &(DenisCodeur->Positio
           //Stabilise
           fct_PID_omega(DenisCodeur , ptrPID_omega_fetch);
           //PID_absorbtion(BNO,DenisCodeur,0, 0.15, 0.0001, 0.5);
+            if( abs(BNO->getOmega()) < 5)
+              {
+                Etat = 3;
+              }
             break;
 
         case 3 : 
-          //Avance
+          //Avance vers le centre d'oscillation
           SP_position= 0.40 ;
           fct_PID_position(DenisCodeur , ptrPID_position);
 
@@ -111,7 +120,12 @@ DT_pid *ptrPID_oscille = new DT_pid(&SP_position,(float*) &(DenisCodeur->Positio
         case 8 :
           //Stabilise
           fct_PID_omega(DenisCodeur , ptrPID_omega_ship);
+          if( abs(BNO->getOmega()) < 5)
+              {
+                Etat = 3;
+              }
           break;
+
         case 9 :
           //Stabilise
           Magnet(MagnetOff);
