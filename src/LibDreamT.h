@@ -315,7 +315,7 @@ void Magnet(bool StateMagnet)
   
 
   //pid1->setSP(CV);
-	CV=pid1->response_Sum();
+	CV=pid1->response_Sum(); 
   //CV+=Barriere_Virtuelle;
 
   
