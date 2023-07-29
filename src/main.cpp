@@ -43,7 +43,7 @@ DT_pid *ptrPID_oscille = new DT_pid(&SP_position,(float*) &(DenisCodeur->Positio
             break;
         case 1 : 
           //Avance
-          SP_position= POSITION_DEPOS ;
+          SP_position= 0.30 ;
           fct_PID_position(DenisCodeur , ptrPID_position);
 
           if(DenisCodeur->Position > 0.28 && DenisCodeur->Position < 0.42)
