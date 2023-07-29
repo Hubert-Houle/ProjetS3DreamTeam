@@ -63,6 +63,9 @@ int Etat = 0;
 //imu::Vector<3> AnglesPendule;
 //imu::Vector<3> OmegaPendule;
 
+
+float Barriere_Virtuelle_global;
+
 //------------------------- Prototypes de fonctions -------------------------
 void InitDream();
 void timerCallback();
@@ -143,6 +146,7 @@ void sendMsg(){
   doc["Vitesse"] = DenisCodeur->getVitesse();
   doc["Acceleration"] = DenisCodeur->getAccel();
   doc["Etat"] = Etat;
+  doc["BarriereVirtuelle"]=Barriere_Virtuelle_global;
   // Serialisation
   serializeJson(doc, Serial);
   // Envoit
