@@ -142,6 +142,7 @@ void sendMsg(){
   doc["actualTime"] = pid_.getActualDt();
   doc["Angle"] = BNO->getAngle();
   doc["Vitesse Angulaire"] = BNO->getOmega();
+  doc["Alpha"] = BNO->getAlpha();
   doc["Position"] = DenisCodeur->getPosition();
   doc["Vitesse"] = DenisCodeur->getVitesse();
   doc["Acceleration"] = DenisCodeur->getAccel();
@@ -319,7 +320,7 @@ void Magnet(bool StateMagnet)
   
 
   //pid1->setSP(CV);
-	CV=pid1->response_Sum();
+	CV=pid1->response_Sum(); 
   //CV+=Barriere_Virtuelle;
 
   
