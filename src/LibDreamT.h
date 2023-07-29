@@ -29,9 +29,12 @@
 #define MagnetOn        1
 #define MagnetOff       0
 
-#define POSITION_FIN_RAIL 1.5
+#define POSITION_FIN_RAIL 1.7
 #define POSITION_DEBUT_RAIL 0
-#define GAIN_BARRIERE_VIRTUELLE 0
+#define GAIN_BARRIERE_VIRTUELLE 0.05
+#define K_OFFSETPOSITIF -0.03
+#define K_OFFSETNEGATIF 0.04
+
 //---------------------------- variables globales ---------------------------
 ArduinoX AX_;                       // objet arduinoX
 MegaServo servo_;                   // objet servomoteur
