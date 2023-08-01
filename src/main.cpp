@@ -6,10 +6,10 @@
 
 /*---------------------------- Definitions du parcour -----------------------------*/
 #define POSITION_DEPOS -0.30
-#define OBSTACLE -0.10
-#define BUCKET -0.30
+#define OBSTACLE -0.62  //au centre = -0.62
+#define BUCKET -0.98
 #define PICK 0.30
-#define CENTRE 0.0
+#define CENTRE -0.62
 #define EDGE 0.60
 #define OFFSET_OSCILLATION 0.35
 
@@ -18,7 +18,7 @@
 void setup() 
 {
  InitDream();
-
+  //digitalWrite( 2 , HIGH );
 };
 
 
@@ -46,7 +46,7 @@ DT_pid *ptrPID_oscille = new DT_pid(&SP_position,(float*) &(DenisCodeur->Positio
   {
     BNO->setOmega();
     Barriere_Virtuelle_global=GAIN_BARRIERE_VIRTUELLE * ((1/(POSITION_FIN_RAIL-DenisCodeur->getPosition())+K_OFFSETPOSITIF)*(DenisCodeur->getVitesse()>0)+(1/(POSITION_DEBUT_RAIL-DenisCodeur->getPosition())+K_OFFSETNEGATIF)*(DenisCodeur->getVitesse()<0));
-    Serial.println(DenisCodeur->LaserTag);
+    //Serial.println(DenisCodeur->LaserTag);
    switch (Etat)
     {
         case 0 :
@@ -59,7 +59,7 @@ DT_pid *ptrPID_oscille = new DT_pid(&SP_position,(float*) &(DenisCodeur->Positio
           SP_position= CENTRE ;
           fct_PID_position(DenisCodeur , ptrPID_position);
 
-          if(DenisCodeur->Position > -0.05 && DenisCodeur->Position < 0.1)
+          if(DenisCodeur->Position > (CENTRE - 0.05) && DenisCodeur->Position < (CENTRE +0.1))
             {
               Etat = 1;
             }
@@ -79,7 +79,7 @@ DT_pid *ptrPID_oscille = new DT_pid(&SP_position,(float*) &(DenisCodeur->Positio
           //Recule lentement jusqu'au bout du rail
           AX_.setMotorPWM(0 , 0.2);
           Magnet(MagnetOn);
-          if(DenisCodeur->Position > EDGE )
+          if(DenisCodeur->LaserTag == 0 )
             {
               Etat = 2;
             }
@@ -152,7 +152,7 @@ DT_pid *ptrPID_oscille = new DT_pid(&SP_position,(float*) &(DenisCodeur->Positio
         case 8 :
           SP_position= BUCKET;
           fct_PID_position(DenisCodeur , ptrPID_position);
-          if(DenisCodeur->Position < (BUCKET)  && BNO->currentOmega > OBSTACLE )
+          if(DenisCodeur->Position < (BUCKET))
           {
             //AX_.setMotorPWM(0 , -0.2);
             //delay(750);
