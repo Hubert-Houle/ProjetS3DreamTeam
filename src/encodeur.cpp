@@ -5,7 +5,9 @@ encodeur::encodeur()
 {
     LePlusBeauEncodeurDuMonde = new ArduinoX;
     LePlusBeauEncodeurDuMonde->init();
-
+    pinMode( LaserPin , OUTPUT );
+    pinMode( SensorPin , INPUT_PULLUP);
+    digitalWrite( LaserPin , HIGH );
 
 }
 
@@ -18,10 +20,18 @@ encodeur::~encodeur()
 
 double encodeur::getPosition()
 {
+    LaserTag = digitalRead(SensorPin);
+
+    if (LaserTag == 0)
+    {
+        Position = 0;
+        LePlusBeauEncodeurDuMonde->resetEncoder(0);
+    }
 
     Position = LePlusBeauEncodeurDuMonde->readEncoder(0)*dpp;
     //Position = AX_.readEncoder(0)*dpp;
     PrevPosition = Position;
+    
     return Position;
 }
 
@@ -70,3 +80,5 @@ double encodeur::getAccel()
 
     return Acceleration;
 }
+
+
