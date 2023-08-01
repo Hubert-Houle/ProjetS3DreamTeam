@@ -8,6 +8,11 @@
 
 class encodeur
 {
+
+    private: 
+        const int LaserPin = 2;
+        const int SensorPin = 8; 
+        int reset = 0;
     public:
         double LiveTime = 0;
         double PrevTime = 0;
@@ -16,7 +21,7 @@ class encodeur
         double Vitesse = 0;
         double PrevVitesse = 0;
         double Acceleration = 0;
-
+        bool LaserTag = 1;
         ArduinoX *LePlusBeauEncodeurDuMonde;
 
         double R = 0.036;
