@@ -45,7 +45,7 @@ DT_pid *ptrPID_oscille = new DT_pid(&SP_position,(float*) &(DenisCodeur->Positio
   while(1)
   {
     BNO->setOmega();
-    Barriere_Virtuelle_global=GAIN_BARRIERE_VIRTUELLE * ((1/(POSITION_FIN_RAIL-DenisCodeur->getPosition())+K_OFFSETPOSITIF)*(DenisCodeur->getVitesse()>0)+(1/(POSITION_DEBUT_RAIL-DenisCodeur->getPosition())+K_OFFSETNEGATIF)*(DenisCodeur->getVitesse()<0));
+    //Barriere_Virtuelle_global=GAIN_BARRIERE_VIRTUELLE * ((1/(POSITION_FIN_RAIL-DenisCodeur->getPosition())+K_OFFSETPOSITIF)*(DenisCodeur->getVitesse()>0)+(1/(POSITION_DEBUT_RAIL-DenisCodeur->getPosition())+K_OFFSETNEGATIF)*(DenisCodeur->getVitesse()<0));
     
    switch (Etat)
     {
