@@ -154,7 +154,7 @@ void sendMsg(){
   // Serialisation
   serializeJson(doc, Serial);
   // Envoit
-  //Serial.println();
+  Serial.println(); //NE PAS COMMENTER, IMPORTANT POUR LE FORMAT DU MESSAGE
   shouldSend_ = false;
 }
 

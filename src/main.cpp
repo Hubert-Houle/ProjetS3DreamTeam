@@ -6,12 +6,12 @@
 
 /*---------------------------- Definitions du parcour -----------------------------*/
 #define POSITION_DEPOS -0.30
-#define OBSTACLE 0.00
+#define OBSTACLE -0.10
 #define BUCKET -0.30
 #define PICK 0.30
-#define CENTRE 0.00
-#define EDGE 0.80
-#define OFFSET_OSCILLATION 0.40
+#define CENTRE 0.0
+#define EDGE 0.60
+#define OFFSET_OSCILLATION 0.35
 
 /*---------------------------- fonctions "Main" -----------------------------*/
 
@@ -45,7 +45,7 @@ DT_pid *ptrPID_oscille = new DT_pid(&SP_position,(float*) &(DenisCodeur->Positio
   while(1)
   {
     BNO->setOmega();
-    //Barriere_Virtuelle_global=GAIN_BARRIERE_VIRTUELLE * ((1/(POSITION_FIN_RAIL-DenisCodeur->getPosition())+K_OFFSETPOSITIF)*(DenisCodeur->getVitesse()>0)+(1/(POSITION_DEBUT_RAIL-DenisCodeur->getPosition())+K_OFFSETNEGATIF)*(DenisCodeur->getVitesse()<0));
+    Barriere_Virtuelle_global=GAIN_BARRIERE_VIRTUELLE * ((1/(POSITION_FIN_RAIL-DenisCodeur->getPosition())+K_OFFSETPOSITIF)*(DenisCodeur->getVitesse()>0)+(1/(POSITION_DEBUT_RAIL-DenisCodeur->getPosition())+K_OFFSETNEGATIF)*(DenisCodeur->getVitesse()<0));
     
    switch (Etat)
     {
@@ -54,7 +54,7 @@ DT_pid *ptrPID_oscille = new DT_pid(&SP_position,(float*) &(DenisCodeur->Positio
           Magnet(MagnetOff);
             break;
         
-        case 10 : 
+        case 11 : 
           //Avance au centre rapidement
           SP_position= CENTRE ;
           fct_PID_position(DenisCodeur , ptrPID_position);
@@ -65,7 +65,7 @@ DT_pid *ptrPID_oscille = new DT_pid(&SP_position,(float*) &(DenisCodeur->Positio
             }
             break;
 
-        case 11 :
+        case 12 :
           //Stabilise
           fct_PID_omega(DenisCodeur , ptrPID_omega_fetch);
           //PID_absorbtion(BNO,DenisCodeur,0, 0.15, 0.0001, 0.5);
@@ -98,10 +98,13 @@ DT_pid *ptrPID_oscille = new DT_pid(&SP_position,(float*) &(DenisCodeur->Positio
 
         case 3 : 
           //Avance vers le centre d'oscillation
-          SP_position= OBSTACLE + OFFSET_OSCILLATION ;
-          fct_PID_position(DenisCodeur , ptrPID_position);
 
-          if(DenisCodeur->Position < (OBSTACLE + OFFSET_OSCILLATION + 0.01) )
+          //SP_position= OBSTACLE + OFFSET_OSCILLATION  + 0.15;
+          //fct_PID_position(DenisCodeur , ptrPID_position);
+
+          AX_.setMotorPWM(0 , -0.2);
+
+          if(DenisCodeur->Position < (OBSTACLE + OFFSET_OSCILLATION))
             {
               Etat = 4;
             }
@@ -117,7 +120,7 @@ DT_pid *ptrPID_oscille = new DT_pid(&SP_position,(float*) &(DenisCodeur->Positio
           //Oscillation
           SP_position=0.10*sin(2.0*PI*0.75*millis()/1000.0) + (OBSTACLE + OFFSET_OSCILLATION) ;
           fct_PID_oscille(DenisCodeur , ptrPID_position);
-          if(BNO->getAngle() > 40)
+          if(BNO->getAngle() > 45)
           {
             Etat = 6;
           }
@@ -125,9 +128,9 @@ DT_pid *ptrPID_oscille = new DT_pid(&SP_position,(float*) &(DenisCodeur->Positio
 
         case 6 :
           //Traverse
-          SP_position= -( OBSTACLE - 0.20 );
+          SP_position= ( OBSTACLE - 0.25 );
           fct_PID_position(DenisCodeur , ptrPID_position);
-          if(DenisCodeur->Position < ( OBSTACLE - 0.19 ) )
+          if(DenisCodeur->Position < ( OBSTACLE - 0.27 ) )
           {
             //AX_.setMotorPWM(0 , -0.2);
             //delay(750);
@@ -135,27 +138,38 @@ DT_pid *ptrPID_oscille = new DT_pid(&SP_position,(float*) &(DenisCodeur->Positio
           }
             break;
           
-        case 7 :
-          SP_position= (OBSTACLE - 0.25);
-          fct_PID_position(DenisCodeur , ptrPID_position);
-          if(DenisCodeur->Position < (OBSTACLE - 0.24)  && BNO->currentOmega > OBSTACLE )
-          {
-            //AX_.setMotorPWM(0 , -0.2);
-            //delay(750);
-            Etat = 8;
-          }
-            break;
+        
             
-        case 8 :
+        case 7 :
           //Stabilise
           fct_PID_omega(DenisCodeur , ptrPID_omega_ship);
-          if( abs(BNO->getOmega()) < 3 && BNO->getAngle() == 0)
+          if( abs(BNO->getOmega()) < 8 && abs(BNO->getAngle()) < 5)
               {
-                Etat = 9;
+                Etat = 8;
               }
           break;
 
+        case 8 :
+          SP_position= BUCKET;
+          fct_PID_position(DenisCodeur , ptrPID_position);
+          if(DenisCodeur->Position < (BUCKET)  && BNO->currentOmega > OBSTACLE )
+          {
+            //AX_.setMotorPWM(0 , -0.2);
+            //delay(750);
+            Etat = 9;
+          }
+            break;
+
         case 9 :
+          //Stabilise
+          fct_PID_omega(DenisCodeur , ptrPID_omega_ship);
+          if( abs(BNO->getOmega()) < 5 && abs(BNO->getAngle()) < 0.5)
+              {
+                Etat = 10;
+              }
+          break;
+
+        case 10 :
           //Stabilise
           Magnet(MagnetOff);
           delay(10);
