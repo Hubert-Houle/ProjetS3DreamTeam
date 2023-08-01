@@ -5,8 +5,13 @@
 
 
 /*---------------------------- Definitions du parcour -----------------------------*/
-#define POSITION_DEPOS -0.3
-
+#define POSITION_DEPOS -0.30
+#define OBSTACLE 0.00
+#define BUCKET -0.30
+#define PICK 0.30
+#define CENTRE 0.00
+#define EDGE 0.80
+#define OFFSET_OSCILLATION 0.40
 
 /*---------------------------- fonctions "Main" -----------------------------*/
 
@@ -48,16 +53,38 @@ DT_pid *ptrPID_oscille = new DT_pid(&SP_position,(float*) &(DenisCodeur->Positio
           AX_.setMotorPWM(0 , 0);
           Magnet(MagnetOn);
             break;
-        case 1 : 
-          //Avance
-          SP_position= 0.30 ;
+        
+        case 10 : 
+          //Avance au centre rapidement
+          SP_position= CENTRE ;
           fct_PID_position(DenisCodeur , ptrPID_position);
 
-          if(DenisCodeur->Position > 0.28 && DenisCodeur->Position < 0.42)
+          if(DenisCodeur->Position > -0.05 && DenisCodeur->Position < 0.1)
+            {
+              Etat = 1;
+            }
+            break;
+
+        case 11 :
+          //Stabilise
+          fct_PID_omega(DenisCodeur , ptrPID_omega_fetch);
+          //PID_absorbtion(BNO,DenisCodeur,0, 0.15, 0.0001, 0.5);
+            if( abs(BNO->getOmega()) < 5)
+              {
+                Etat = 1;
+              }
+            break;
+
+        case 1 : 
+          //Recule lentement jusqu'au bout du rail
+          AX_.setMotorPWM(0 , 0.2);
+
+          if(DenisCodeur->Position > EDGE )
             {
               Etat = 2;
             }
             break;
+
 
         case 2 :
           //Stabilise
@@ -71,10 +98,10 @@ DT_pid *ptrPID_oscille = new DT_pid(&SP_position,(float*) &(DenisCodeur->Positio
 
         case 3 : 
           //Avance vers le centre d'oscillation
-          SP_position= 0.40 ;
+          SP_position= OBSTACLE + OFFSET_OSCILLATION ;
           fct_PID_position(DenisCodeur , ptrPID_position);
 
-          if(DenisCodeur->Position < 0.41)
+          if(DenisCodeur->Position < (OBSTACLE + OFFSET_OSCILLATION + 0.01) )
             {
               Etat = 4;
             }
@@ -88,7 +115,7 @@ DT_pid *ptrPID_oscille = new DT_pid(&SP_position,(float*) &(DenisCodeur->Positio
 
         case 5 :
           //Oscillation
-          SP_position=0.10*sin(2.0*PI*0.75*millis()/1000.0)+0.40;
+          SP_position=0.10*sin(2.0*PI*0.75*millis()/1000.0) + (OBSTACLE + OFFSET_OSCILLATION) ;
           fct_PID_oscille(DenisCodeur , ptrPID_position);
           if(BNO->getAngle() > 40)
           {
@@ -98,9 +125,9 @@ DT_pid *ptrPID_oscille = new DT_pid(&SP_position,(float*) &(DenisCodeur->Positio
 
         case 6 :
           //Traverse
-          SP_position= -0.20;
+          SP_position= -( OBSTACLE - 0.20 );
           fct_PID_position(DenisCodeur , ptrPID_position);
-          if(DenisCodeur->Position < -0.19)
+          if(DenisCodeur->Position < ( OBSTACLE - 0.19 ) )
           {
             //AX_.setMotorPWM(0 , -0.2);
             //delay(750);
@@ -109,9 +136,9 @@ DT_pid *ptrPID_oscille = new DT_pid(&SP_position,(float*) &(DenisCodeur->Positio
             break;
           
         case 7 :
-          SP_position= -0.25;
+          SP_position= (OBSTACLE - 0.25);
           fct_PID_position(DenisCodeur , ptrPID_position);
-          if(DenisCodeur->Position < -0.24  && BNO->currentOmega > 0)
+          if(DenisCodeur->Position < (OBSTACLE - 0.24)  && BNO->currentOmega > OBSTACLE )
           {
             //AX_.setMotorPWM(0 , -0.2);
             //delay(750);
@@ -147,7 +174,7 @@ DT_pid *ptrPID_oscille = new DT_pid(&SP_position,(float*) &(DenisCodeur->Positio
       serialEvent();
     }
     if(shouldRead_){
-    Serial.println("LIS MON OSTI DE MESSAGE CALAAISESESESESE");
+   
     readMsg();
     }
     if(shouldSend_){

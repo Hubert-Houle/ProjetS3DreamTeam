@@ -154,7 +154,7 @@ void sendMsg(){
   // Serialisation
   serializeJson(doc, Serial);
   // Envoit
-  Serial.println();
+  //Serial.println();
   shouldSend_ = false;
 }
 
@@ -427,8 +427,8 @@ void getDataEncoder(double *tableauEncoder)
     //Serial.println("DeltaTime: ");
     //Serial.println(DeltaTime , 16);
     double AccMotor = DeltaVitesse / DeltaTime;
-    Serial.println("AccMotor: ");
-    Serial.println(AccMotor , 16);
+    //Serial.println("AccMotor: ");
+    //Serial.println(AccMotor , 16);
 
     tableauEncoder[0] = LiveTime;
     tableauEncoder[1] = LivePulse;
