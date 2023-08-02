@@ -6,7 +6,7 @@
 
 /*---------------------------- Definitions du parcour -----------------------------*/
 #define POSITION_DEPOS -0.30
-#define OBSTACLE -0.62  //au centre = -0.62
+#define OBSTACLE -0.63  //au centre = -0.62
 #define BUCKET -0.98
 #define PICK 0.30
 #define CENTRE -0.62
@@ -174,8 +174,8 @@ DT_pid *ptrPID_oscille = new DT_pid(&SP_position,(float*) &(DenisCodeur->Positio
         case 10 :
           //Stabilise
           Magnet(MagnetOff);
-          delay(10);
-          Etat = 0;
+          delay(250);
+          Etat = 11;
           break;
     }
    // SP_position=0.25*sin(2*PI*1*millis()/1000.0);

@@ -355,7 +355,7 @@ void Magnet(bool StateMagnet)
 
   float CV;
 
-  
+  CV=BarriereVirtuelle(CV,enCodeur->Position);
 
 	CV=pid1->response_Sum();
 
