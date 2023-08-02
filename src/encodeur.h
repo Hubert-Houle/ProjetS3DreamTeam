@@ -24,7 +24,7 @@ class encodeur
         bool LaserTag = 1;
         ArduinoX *LePlusBeauEncodeurDuMonde;
 
-        double R = 0.036;
+        double R = (0.0713/2.0000);
         double C = 3.1416*(2.00*R);
         double Kg = 25.0; 
         double ppt = 64.00;
@@ -35,6 +35,7 @@ class encodeur
         double getPosition();
         double getVitesse();
         double getAccel();
+        bool LaserState();
 
 
 

@@ -9,7 +9,7 @@
 #define OBSTACLE -0.63  //au centre = -0.62
 #define BUCKET -0.98
 #define PICK 0.30
-#define CENTRE -0.62
+#define CENTRE -0.635
 #define EDGE 0.60
 #define OFFSET_OSCILLATION 0.35
 
@@ -79,10 +79,12 @@ DT_pid *ptrPID_oscille = new DT_pid(&SP_position,(float*) &(DenisCodeur->Positio
 
         case 1 : 
           //Recule lentement jusqu'au bout du rail
-          AX_.setMotorPWM(0 , 0.10);
+          AX_.setMotorPWM(0 , 0.20);
           Magnet(MagnetOn);
-          if(DenisCodeur->LaserTag == 1 )
+          if(DenisCodeur->LaserState() == 1)
             {
+              AX_.setMotorPWM(0 , 0);
+              delay(500);
               Etat = 2;
             }
             break;

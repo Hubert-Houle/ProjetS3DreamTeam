@@ -20,6 +20,16 @@ encodeur::~encodeur()
 
 double encodeur::getPosition()
 {
+    
+    Position = LePlusBeauEncodeurDuMonde->readEncoder(0)*dpp;
+    //Position = AX_.readEncoder(0)*dpp;
+    PrevPosition = Position;
+    
+    return Position;
+}
+
+bool encodeur::LaserState()
+{
     LaserTag = digitalRead(SensorPin);
 
     if (LaserTag == 1)
@@ -28,11 +38,7 @@ double encodeur::getPosition()
         LePlusBeauEncodeurDuMonde->resetEncoder(0);
     }
 
-    Position = LePlusBeauEncodeurDuMonde->readEncoder(0)*dpp;
-    //Position = AX_.readEncoder(0)*dpp;
-    PrevPosition = Position;
-    
-    return Position;
+    return LaserTag;
 }
 
 

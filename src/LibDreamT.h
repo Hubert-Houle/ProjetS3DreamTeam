@@ -39,7 +39,7 @@
 
 #define ROWOFDATA 50
 #define COLOFDATA 7
-#define FINRAIL 1.7
+#define FINRAIL 1.3
 #define DEBUTRAIL 0
 
 //---------------------------- variables globales ---------------------------
@@ -449,7 +449,8 @@ void getDataEncoder(double *tableauEncoder)
 float BarriereVirtuelle(float cv_Actuel, float x)
 {
   x=-1*x;
-	if(x>FINRAIL || x<DEBUTRAIL){return 0;}
+	if(x>FINRAIL){return 0.2;}
+  if(x<DEBUTRAIL){return 0;}
 
 	float erreurabs[ROWOFDATA];
 	float erreurmin= 100;
