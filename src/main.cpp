@@ -46,6 +46,9 @@ DT_pid *ptrPID_oscille = new DT_pid(&SP_position,(float*) &(DenisCodeur->Positio
   {
     BNO->setOmega();
     //Serial.println(DenisCodeur->LaserTag);
+
+    Barriere_Virtuelle_global = BarriereVirtuelle(1, DenisCodeur->Position );
+
    switch (Etat)
     {
         case 0 :

@@ -170,6 +170,7 @@ void sendMsg(){
   doc["Vitesse"] = DenisCodeur->getVitesse();
   doc["Acceleration"] = DenisCodeur->getAccel();
   doc["Etat"] = Etat;
+  doc["barriere"] = Barriere_Virtuelle_global;
   // Serialisation
   serializeJson(doc, Serial);
   // Envoit
@@ -446,7 +447,7 @@ void getDataEncoder(double *tableauEncoder)
 
 float BarriereVirtuelle(float cv_Actuel, float x)
 {
-
+  x=-1*x;
 	if(x>FINRAIL || x<DEBUTRAIL){return 0;}
 
 	float erreurabs[ROWOFDATA];
