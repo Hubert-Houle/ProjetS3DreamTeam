@@ -170,7 +170,6 @@ void sendMsg(){
   doc["Vitesse"] = DenisCodeur->getVitesse();
   doc["Acceleration"] = DenisCodeur->getAccel();
   doc["Etat"] = Etat;
-  doc["BarriereVirtuelle"]=Barriere_Virtuelle_global;
   // Serialisation
   serializeJson(doc, Serial);
   // Envoit
@@ -337,15 +336,12 @@ void Magnet(bool StateMagnet)
  bool fct_PID_position(encodeur* enCodeur, DT_pid* pid1){
 
   float CV;
-  float Barriere_Virtuelle=GAIN_BARRIERE_VIRTUELLE * (1/((POSITION_FIN_RAIL-enCodeur->getPosition())*(enCodeur->getVitesse()>0))+((POSITION_DEBUT_RAIL-enCodeur->getPosition())*(enCodeur->getVitesse()<0)));
-  //pid2->setSP(Barriere_Virtuelle);
 
   
 
-  //pid1->setSP(CV);
 	CV=pid1->response_Sum(); 
-  //CV+=Barriere_Virtuelle;
 
+  CV=BarriereVirtuelle(CV,enCodeur->Position);
   
 	AX_.setMotorPWM(0, (CV>1) ? 1: ((CV<-1) ? -1 : CV));  // retourner CV si entre 1 et -1 sinon retourner 1 ou -1
 	
@@ -357,14 +353,10 @@ void Magnet(bool StateMagnet)
  bool fct_PID_omega(encodeur* enCodeur, DT_pid* pid1){
 
   float CV;
-  float Barriere_Virtuelle=GAIN_BARRIERE_VIRTUELLE * (1/((POSITION_FIN_RAIL-enCodeur->getPosition())*(enCodeur->getVitesse()>0))+((POSITION_DEBUT_RAIL-enCodeur->getPosition())*(enCodeur->getVitesse()<0)));
-  //pid2->setSP(Barriere_Virtuelle);
 
   
 
-  //pid1->setSP(CV);
 	CV=pid1->response_Sum();
-  //CV+=Barriere_Virtuelle;
 
   
 	AX_.setMotorPWM(0, (CV>1) ? 1: ((CV<-1) ? -1 : CV));  // retourner CV si entre 1 et -1 sinon retourner 1 ou -1
@@ -377,14 +369,10 @@ void Magnet(bool StateMagnet)
   bool fct_PID_oscille(encodeur* enCodeur, DT_pid* pid1){
 
   float CV;
-  float Barriere_Virtuelle=GAIN_BARRIERE_VIRTUELLE * (1/((POSITION_FIN_RAIL-enCodeur->getPosition())*(enCodeur->getVitesse()>0))+((POSITION_DEBUT_RAIL-enCodeur->getPosition())*(enCodeur->getVitesse()<0)));
-  //pid2->setSP(Barriere_Virtuelle);
 
   
 
-  //pid1->setSP(CV);
 	CV=pid1->response_Sum();
-  //CV+=Barriere_Virtuelle;
 
   
 	AX_.setMotorPWM(0, (CV>1) ? 1: ((CV<-1) ? -1 : CV));  // retourner CV si entre 1 et -1 sinon retourner 1 ou -1
