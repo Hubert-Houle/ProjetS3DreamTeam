@@ -12,6 +12,7 @@
 #define CENTRE -0.635
 #define EDGE 0.60
 #define OFFSET_OSCILLATION 0.35
+#define OFFSET_HARDCODEEXTREME42069 0.40
 
 /*---------------------------- fonctions "Main" -----------------------------*/
 
@@ -57,7 +58,88 @@ DT_pid *ptrPID_oscille_TX = new DT_pid(&SP_position,(float*) &(BNO->currentOmega
           AX_.setMotorPWM(0 , 0);
           Magnet(MagnetOff);
             break;
-        
+
+        case 1 : 
+          //Recule lentement jusqu'au bout du rail
+          AX_.setMotorPWM(0 , 0.20);
+          Magnet(MagnetOn);
+          if(DenisCodeur->LaserState() == 1)
+            {
+              AX_.setMotorPWM(0 , 0);
+              delay(500);
+
+              if(DenisCodeur->LaserState() == 1)
+              {
+                Etat = 3;
+                delay(2000);
+              }
+              
+            }
+            break;
+
+        case 2 : 
+          //Avance vers le centre d'oscillation
+
+          //SP_position= OBSTACLE + OFFSET_OSCILLATION  + 0.15;
+          //fct_PID_position(DenisCodeur , ptrPID_position);
+
+          AX_.setMotorPWM(0 , -0.9);
+
+          if(DenisCodeur->Position < (OBSTACLE + OFFSET_HARDCODEEXTREME42069))
+            {
+              Etat = 3;
+              AX_.setMotorPWM(0 , 0);
+            }
+            break;
+
+        case 3 : 
+          //Avance vers le centre d'oscillation
+
+          
+
+          AX_.setMotorPWM(0 , -1);
+
+          if(DenisCodeur->Position < (OBSTACLE + OFFSET_HARDCODEEXTREME42069))
+            {
+              Etat = 4;
+              AX_.setMotorPWM(0 , 0);
+              time = millis();
+            }
+            break;
+
+        case 4 : 
+          //Avance vers le centre d'oscillatio
+          
+
+          if(BNO->getOmega() < 0 && time + 100 < millis())
+            {
+              Etat = 5;
+              AX_.setMotorPWM(0 , -1);
+            }
+            break;
+
+        case 5 : 
+          //Avance vers le centre d'oscillation
+
+          if(DenisCodeur->Position < -0.7)
+            {
+              Etat = 6;
+            }
+            break;
+
+        case 6 :
+          //Stabilise
+          fct_PID_omega(DenisCodeur , ptrPID_omega_ship);
+          if( abs(BNO->getOmega()) < 8 && abs(BNO->getAngle()) < 5)
+              {
+                AX_.setMotorPWM(0,0);
+                Magnet(MagnetOff);
+                delay(250);
+                Etat = 1;
+              }
+          break;
+
+        /*
         case 11 : 
           //Avance au centre rapidement
           SP_position= CENTRE ;
@@ -180,7 +262,7 @@ DT_pid *ptrPID_oscille_TX = new DT_pid(&SP_position,(float*) &(BNO->currentOmega
             Etat = 6;
           }
             break;
-        */
+        
 
         case 6 :
           //Traverse
@@ -234,9 +316,9 @@ DT_pid *ptrPID_oscille_TX = new DT_pid(&SP_position,(float*) &(BNO->currentOmega
 
         case 777 :
           //PIDsinusAngle
-          SP_position=10;
+          SP_position=40;
           PID_Oscille_TX(ptrPID_oscille_TX);
-
+      */
     }
    // SP_position=0.25*sin(2*PI*1*millis()/1000.0);
     //fct_PID_position(DenisCodeur , ptrPID_position ,ptrPID_position); 
