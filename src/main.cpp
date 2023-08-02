@@ -31,6 +31,7 @@ void loop()
 BNO = new bnoRead;
 DenisCodeur = new encodeur;
 float SP_position=0;
+double time = 0;
 
 DT_pid *ptrPID_omega_fetch= new DT_pid(&SP_position,(float*) &(BNO->currentOmega), (float) 0.005,(float) 0.0000, (float) 0.0003);
 DT_pid *ptrPID_omega_ship= new DT_pid(&SP_position,(float*) &(BNO->currentOmega), (float) 0.003,(float) 0.0000, (float) 0.0001);
@@ -124,7 +125,7 @@ DT_pid *ptrPID_oscille = new DT_pid(&SP_position,(float*) &(DenisCodeur->Positio
           fct_PID_omega(DenisCodeur , ptrPID_omega_fetch);
           //PID_absorbtion(BNO,DenisCodeur,0, 0.15, 0.0001, 0.5);
 
-            if( abs(BNO->getOmega()) < 5)
+            if( abs(BNO->getOmega()) < 5 && abs(BNO->getAngle()) < 5) 
               {
                 Etat = 34;
               }
@@ -147,16 +148,23 @@ DT_pid *ptrPID_oscille = new DT_pid(&SP_position,(float*) &(DenisCodeur->Positio
           if(DenisCodeur->Position < (OBSTACLE + OFFSET_OSCILLATION + 0.02) && DenisCodeur->Position > (OBSTACLE + OFFSET_OSCILLATION - 0.02)) 
             {
               AX_.setMotorPWM(0 , 0);
-              delay(1000);
+              delay(2500);
+              while(BNO->getOmega() > 0)
+              {
+                BNO->setOmega();
+                //attendre que la vitesse angulaire soit negative
+              }
               Etat = 5;
+              time = millis();
             }
             break;
 
         case 5 :
           //Oscillation
-          SP_position=0.10*sin(2.0*PI*0.75*millis()/1000.0) + (OBSTACLE + OFFSET_OSCILLATION) ;
+
+          SP_position=0.10*sin(2.0*PI*0.735*(millis()-time)/1000.0) + (OBSTACLE + OFFSET_OSCILLATION) ; //anciennement 0.75
           fct_PID_oscille(DenisCodeur , ptrPID_position);
-          if(BNO->getAngle() > 50)
+          if(BNO->getAngle() > 45)
           {
             Etat = 6;
           }
