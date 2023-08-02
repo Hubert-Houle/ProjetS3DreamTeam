@@ -30,15 +30,15 @@ double encodeur::getPosition()
 
 bool encodeur::LaserState()
 {
-    LaserTag = digitalRead(SensorPin);
+     bool State = digitalRead(SensorPin);
 
-    if (LaserTag == 1)
+    if (State == 1)
     {
         Position = 0;
         LePlusBeauEncodeurDuMonde->resetEncoder(0);
     }
 
-    return LaserTag;
+    return State;
 }
 
 
