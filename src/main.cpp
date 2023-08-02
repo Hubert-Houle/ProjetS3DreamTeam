@@ -37,6 +37,7 @@ DT_pid *ptrPID_omega_fetch= new DT_pid(&SP_position,(float*) &(BNO->currentOmega
 DT_pid *ptrPID_omega_ship= new DT_pid(&SP_position,(float*) &(BNO->currentOmega), (float) 0.003,(float) 0.0000, (float) 0.0001);
 DT_pid *ptrPID_position= new DT_pid(&SP_position,(float*) &(DenisCodeur->Position), (float) 5,(float) 0.00001, (float) 0.00001);
 DT_pid *ptrPID_oscille = new DT_pid(&SP_position,(float*) &(DenisCodeur->Position), (float) 5,(float) 0.00001, (float) 0.00001);
+DT_pid *ptrPID_oscille_TX = new DT_pid(&SP_position,(float*) &(BNO->currentOmega ), (float) 0.005,(float) 0.0, (float) 0.0003);
 
 /*------------------------A ESSAYER/FAIRE
   1- rajouter du D a omega_fetch pour qu'il ralentisse plus tot
@@ -230,6 +231,12 @@ DT_pid *ptrPID_oscille = new DT_pid(&SP_position,(float*) &(DenisCodeur->Positio
           delay(250);
           Etat = 11;
           break;
+
+        case 777 :
+          //PIDsinusAngle
+          SP_position=10;
+          PID_Oscille_TX(ptrPID_oscille_TX);
+
     }
    // SP_position=0.25*sin(2*PI*1*millis()/1000.0);
     //fct_PID_position(DenisCodeur , ptrPID_position ,ptrPID_position); 

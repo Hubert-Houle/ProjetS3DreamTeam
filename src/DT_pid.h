@@ -3,6 +3,8 @@
 #ifndef DT_PID_H
 #define DT_PID_H 
 
+#include "stdlib.h"
+
 class DT_pid
 {
 	public:
@@ -14,7 +16,7 @@ class DT_pid
 		float erreur_D;
 		
 		float response_Sum();
-
+		float response_Sum_Oscille();
 
 	private:
 
@@ -29,6 +31,7 @@ class DT_pid
 
 
 		void erreurFCN();
+		void erreurFCN2();
 		float P();
 		float I();
 		float D();
