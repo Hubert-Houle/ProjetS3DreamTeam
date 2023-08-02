@@ -77,9 +77,9 @@ DT_pid *ptrPID_oscille = new DT_pid(&SP_position,(float*) &(DenisCodeur->Positio
 
         case 1 : 
           //Recule lentement jusqu'au bout du rail
-          AX_.setMotorPWM(0 , 0.2);
+          AX_.setMotorPWM(0 , 0.10);
           Magnet(MagnetOn);
-          if(DenisCodeur->LaserTag == 0 )
+          if(DenisCodeur->LaserTag == 1 )
             {
               Etat = 2;
             }
