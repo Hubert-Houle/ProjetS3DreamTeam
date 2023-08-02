@@ -472,7 +472,18 @@ float BarriereVirtuelle(float cv_Actuel, float x)
 	return COEFFS[0][Ind]*pow(x,6)+COEFFS[1][Ind]*pow(x,5)+COEFFS[2][Ind]*pow(x,4)+COEFFS[3][Ind]*pow(x,3)+COEFFS[4][Ind]*pow(x,2)+COEFFS[5][Ind]*x+COEFFS[6][Ind];
 }
 
+bool PID_Oscille_TX(DT_pid* pid1)
+{
+  float CV;
+  
+	CV=pid1->response_Sum();
 
+  
+	AX_.setMotorPWM(0, (CV>1) ? 1: ((CV<-1) ? -1 : CV));  // retourner CV si entre 1 et -1 sinon retourner 1 ou -1
+	
+	return 1;
+
+}
 
 #endif
 

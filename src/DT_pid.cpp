@@ -26,7 +26,14 @@ void DT_pid::erreurFCN()
 		
 }
 
-
+void DT_pid::erreurFCN2()
+{
+	erreur_D=erreur_P-(*SPk-abs(*PV));
+	erreur_P=*SPk-abs(*PV);	
+	erreur_I+=erreur_P;
+	
+		
+}
 
 float DT_pid::P()
 {
@@ -51,6 +58,17 @@ float DT_pid::response_Sum()
 
 
 	erreurFCN();
+
+	CV=P()*(KP!=0)+I()*(KI!=0)+D()*(KD!=0);
+	return CV;
+	
+}
+
+float DT_pid::response_Sum_Oscille()
+{
+
+
+	erreurFCN2();
 
 	CV=P()*(KP!=0)+I()*(KI!=0)+D()*(KD!=0);
 	return CV;
