@@ -22,7 +22,7 @@ double encodeur::getPosition()
 {
     LaserTag = digitalRead(SensorPin);
 
-    if (LaserTag == 0)
+    if (LaserTag == 1)
     {
         Position = 0;
         LePlusBeauEncodeurDuMonde->resetEncoder(0);
